@@ -81,7 +81,9 @@ public class MySListener extends PluginListener{
 			return true;
 		}
 		else if(cmd[0].equals("/#save-all") || cmd[0].equals("/#stop")){
-			//TODO isOp();
+			if(player.isOp()){
+				MySD.dumpData();
+			}
 		}
 		return false;
 	}

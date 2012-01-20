@@ -58,7 +58,7 @@ public class MySData {
 			iCo = true;
 		}
 		if(!Proceed){
-			log.severe("[MySalary] No Sutible Economy Plugin Found! Disabling!");
+			log.warning("[MySalary] No Sutible Economy Plugin Found! Disabling!");
 			loader.getPlugin("MySalary").disable();
 		}
 	}
@@ -85,7 +85,7 @@ public class MySData {
 		}
 	}
 	
-	public void loadProps(){
+	private void loadProps(){
 		PropsFile = new File(PF);
 		if(!PropsFile.exists()){
 			try{
@@ -98,7 +98,7 @@ public class MySData {
 				in.close();
 				out.close();
 			}catch (IOException ioe){
-				log.severe("[MySalary] - Issue creating MySalary Properties File From Template!");
+				log.warning("[MySalary] - Issue creating MySalary Properties File From Template!");
 			}
 		}
 		PROPS = new PropertiesFile(PF);
@@ -112,7 +112,7 @@ public class MySData {
 		}
 	}
 	
-	public void loadGroupPay(){
+	private void loadGroupPay(){
 		try {
 		    BufferedReader in = new BufferedReader(new FileReader(GPF));
 		    String str;
@@ -148,11 +148,11 @@ public class MySData {
 		}
 	}
 	
-	public Connection getSQLConn(){
+	private Connection getSQLConn(){
 		return etc.getSQLConnection();
 	}
 	
-	public void loadChecks(){
+	private void loadChecks(){
 		if(DS.equalsIgnoreCase("mysql")){
 			PreparedStatement ps = null;
 			ResultSet rs = null;

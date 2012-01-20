@@ -45,7 +45,7 @@ public class MySTimer {
 		PayOut.purge();
 	}
 	
-	public class PayAll extends TimerTask{
+	private class PayAll extends TimerTask{
 		public void run(){
 			MySA.PayDay();
 			PayOut.schedule(new PayAll(), delay);

@@ -101,7 +101,7 @@ public class MySActions {
 		return true;
 	}
 	
-	public String timeUntil(long time) {
+	private String timeUntil(long time) {
 		if(!paying){
 			double timeLeft = Double.parseDouble(Long.toString(((time - System.currentTimeMillis()) / 1000)));
 			StringBuffer Time = new StringBuffer();
@@ -154,7 +154,7 @@ public class MySActions {
 		}
 	}
 	
-	public String priceForm(double price){
+	private String priceForm(double price){
 		String newprice = String.valueOf(price);
 		String[] form = newprice.split("\\.");
 		if(form[1].length() == 1){

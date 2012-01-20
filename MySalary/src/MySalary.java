@@ -9,7 +9,7 @@ public class MySalary extends Plugin{
 	MySListener MySL;
 	MySTimer MyST;
 	
-	String version = "1.0";
+	String version = "1.1";
 	
 	public void enable(){
 		MySD = new MySData(this);
