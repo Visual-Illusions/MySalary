@@ -1,4 +1,25 @@
 
+/**
+* MySalary v1.x
+* Copyright (C) 2012 Visual Illusions Entertainment
+* @author darkdiplomat <darkdiplomat@visualillusionsent.net>
+* 
+* This file is part of MySalary
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see http://www.gnu.org/copyleft/gpl.html.
+*/
+
 public class MySListener extends PluginListener{
 	MySalary MyS;
 	MySActions MySA;
@@ -128,7 +149,7 @@ public class MySListener extends PluginListener{
 		return false;
 	}
 	
-	public String priceForm(double price){
+	private String priceForm(double price){
 		String newprice = String.valueOf(price);
 		String[] form = newprice.split("\\.");
 		if(form[1].length() == 1){
