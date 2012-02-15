@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
 * MySalary v1.x
@@ -35,51 +34,49 @@ import java.util.logging.Logger;
 */
 
 public class MySData {
-	Logger log;
-	MySalary MyS;
-	String DS;
+	private MySalary MyS;
+	private String DS;
 	
-	PluginLoader loader;
+	private PluginLoader loader;
 	
-	String DIR = "plugins/config/MySalary/";
-	String PF = "plugins/config/MySalary/MySProps.ini";
-	String GPF = "plugins/config/MySalary/GroupPay.txt";
-	String TRF = "plugins/config/MySalary/TimerReset.DONOTEDIT";
-	String ERF = "plugins/config/MySalary/EmployeeRecord.list";
+	private final String DIR = "plugins/config/MySalary/";
+	private final String PF = "plugins/config/MySalary/MySProps.ini";
+	private final String GPF = "plugins/config/MySalary/GroupPay.txt";
+	private final String TRF = "plugins/config/MySalary/TimerReset.DONOTEDIT";
+	private final String ERF = "plugins/config/MySalary/EmployeeRecord.list";
 	
-	HashMap<String, Boolean> W2s;
-	HashMap<String, Double> GroupPay;
-	HashMap<String, String> Employer;
+	protected HashMap<String, Boolean> W2s;
+	protected HashMap<String, Double> GroupPay;
+	protected HashMap<String, String> Employer;
 	
-	PropertiesFile PROPS;
-	PropertiesFile Reset;
+	private PropertiesFile PROPS;
+	private PropertiesFile Reset;
 	
-	File PropsFile;
-	File GroupPayFile;
-	File EmployeeRecordFile;
-	File Dire;
+	private File PropsFile;
+	private File GroupPayFile;
+	private File EmployeeRecordFile;
+	private File Dire;
 	
-	long delay = 120, reset = -1;
-	double regpay = 10;
-	boolean GPay = false, Claim = false, Proceed = false, dCo = false, iCo = false;
+	protected long delay = 120, reset = -1;
+	protected double regpay = 10;
+	protected boolean GPay = false, Claim = false, Proceed = false, dCo = false, iCo = false;
 	
 	public MySData(MySalary MyS){
 		this.MyS = MyS;
 		DS = etc.getInstance().getDataSourceType();
 		loader = etc.getLoader();
-		log = MyS.log;
 		if(loader.getPlugin("dConomy") != null && loader.getPlugin("dConomy").isEnabled()){
-			log.info("[MySalary] dConomy Found!");
+			MyS.log.info("[MySalary] dConomy Found!");
 			Proceed = true;
 			dCo = true;
 		}
 		else if(loader.getPlugin("iConomy") != null && loader.getPlugin("iConomy").isEnabled()){
-			log.info("[MySalary] iConomy Found!");
+			MyS.log.info("[MySalary] iConomy Found!");
 			Proceed = true;
 			iCo = true;
 		}
 		if(!Proceed){
-			log.warning("[MySalary] No Sutible Economy Plugin Found! Disabling!");
+			MyS.log.warning("[MySalary] No Sutible Economy Plugin Found! Disabling!");
 		}
 	}
 	
@@ -118,7 +115,7 @@ public class MySData {
 				in.close();
 				out.close();
 			}catch (IOException ioe){
-				log.warning("[MySalary] - Issue creating MySalary Properties File From Template!");
+				MyS.log.warning("[MySalary] - Issue creating MySalary Properties File From Template!");
 			}
 		}
 		PROPS = new PropertiesFile(PF);
@@ -146,12 +143,12 @@ public class MySData {
 		    			pay = Double.parseDouble(it[1]);
 		    		}catch (NumberFormatException nfe){
 		    			line++;
-		    			log.severe("[MySalary] Issue with group pay at line:"+line);
+		    			MyS.log.severe("[MySalary] Issue with group pay at line:"+line);
 		    			continue;
 		    		}
 		    		if(pay < 1){
 		    			line++;
-		    			log.severe("[MySalary] Issue with group pay at line:"+line);
+		    			MyS.log.severe("[MySalary] Issue with group pay at line:"+line);
 		    			continue;
 		    		}
 		    		GroupPay.put(it[0], pay);
@@ -163,7 +160,7 @@ public class MySData {
 		    }
 		    in.close();
 		} catch (IOException e) {
-			log.severe("[MySalary] - Issue reading from GroupPay.txt! Disabling GroupPay");
+			MyS.log.severe("[MySalary] - Issue reading from GroupPay.txt! Disabling GroupPay");
 			GPay = false;
 		}
 	}
@@ -193,7 +190,7 @@ public class MySData {
 				ps.close();
 				conn.close();
 			} catch (SQLException sqle) {
-				log.log(Level.SEVERE, "[MySalary] - Issue with MySQL! ", sqle);
+				MyS.log.log(Level.SEVERE, "[MySalary] - Issue with MySQL! ", sqle);
 			}
 		}
 		else{
@@ -202,7 +199,7 @@ public class MySData {
 				try {
 					EmployeeRecordFile.createNewFile();
 				} catch (IOException e) {
-					log.severe("[MySalary] - Issue creating EmployeeRecord.list!");
+					MyS.log.severe("[MySalary] - Issue creating EmployeeRecord.list!");
 				}
 			}
 			try {
@@ -218,7 +215,7 @@ public class MySData {
 			    }
 			    in.close();
 			} catch (IOException e) {
-				log.severe("[MySalary] - Issue reading from EmployeeRecord.list!");
+				MyS.log.severe("[MySalary] - Issue reading from EmployeeRecord.list!");
 			}
 		}
 	}
@@ -326,7 +323,7 @@ public class MySData {
 					ps.close();
 					conn.close();
 				} catch (SQLException sqle) {
-					log.log(Level.SEVERE, "[MySalary] - Issue with MySQL! ", sqle);
+					MyS.log.log(Level.SEVERE, "[MySalary] - Issue with MySQL! ", sqle);
 				}
 			}
 		}
@@ -335,7 +332,7 @@ public class MySData {
 			try {
 				EmployeeRecordFile.createNewFile();
 			} catch (IOException ioe) {
-				log.severe("[MySalary] - Issue recreating EmployeeRecord.list!");
+				MyS.log.severe("[MySalary] - Issue recreating EmployeeRecord.list!");
 			}
 			try {
 				BufferedWriter out = new BufferedWriter(new FileWriter(GPF));
@@ -349,7 +346,7 @@ public class MySData {
 			    }
 				out.close();
 			} catch (IOException e) {
-				log.severe("[MySalary] - Issue reading from EmployeeRecord.list!");
+				MyS.log.severe("[MySalary] - Issue reading from EmployeeRecord.list!");
 			}
 		}
 	}

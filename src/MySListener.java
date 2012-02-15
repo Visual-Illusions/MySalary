@@ -104,7 +104,7 @@ public class MySListener extends PluginListener{
 			}
 			return true;
 		}
-		else if(cmd[0].equals("/#save-all") || cmd[0].equals("/#stop")){
+		else if(cmd[0].equalsIgnoreCase("/#save-all") || cmd[0].equalsIgnoreCase("/#stop")){
 			if(player.isOp()){
 				MySD.dumpData();
 			}
@@ -146,7 +146,7 @@ public class MySListener extends PluginListener{
 				}
 			}
 		}
-		else if(cmd[0].equals("save-all") || cmd[0].equals("stop")){
+		else if(cmd[0].equalsIgnoreCase("save-all") || cmd[0].equalsIgnoreCase("stop")){
 			MySD.dumpData();
 		}
 		return false;

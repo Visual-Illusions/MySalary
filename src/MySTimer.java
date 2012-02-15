@@ -23,12 +23,12 @@ import java.util.TimerTask;
 */
 
 public class MySTimer {
-	Timer PayOut;
-	MySalary MyS;
-	MySData MySD;
-	MySActions MySA;
+	private Timer PayOut;
+	private MySalary MyS;
+	private MySData MySD;
+	private MySActions MySA;
 	
-	long delay, reset;
+	private long delay, reset;
 	
 	public MySTimer(MySalary MyS){
 		this.MyS = MyS;
@@ -54,16 +54,16 @@ public class MySTimer {
 	}
 	
 	public void Reset(){
-		PayOut.cancel();
 		PayOut.purge();
+		PayOut.cancel();
 		PayOut = new Timer();
 		PayOut.schedule(new PayAll(), delay);
 		MySD.saveReset(delay+System.currentTimeMillis());
 	}
 	
 	public void Stop(){
-		PayOut.cancel();
 		PayOut.purge();
+		PayOut.cancel();
 	}
 	
 	private class PayAll extends TimerTask{
@@ -71,6 +71,7 @@ public class MySTimer {
 			MySA.PayDay();
 			PayOut.schedule(new PayAll(), delay);
 			MySD.saveReset(delay+System.currentTimeMillis());
+			MySD.dumpData();
 		}
 	}
 }

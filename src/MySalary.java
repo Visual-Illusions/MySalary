@@ -38,7 +38,10 @@ public class MySalary extends Plugin{
 	protected String CurrVer = "1.2";
 	
 	public void enable(){
-		log.info("[MySalary] by darkdiplomat enabled!");
+		log.info("[MySalary] v"+version+" by darkdiplomat enabled!");
+		if(!isLatest()){
+			log.info("[MySalary] - There is an update available! Current = " + CurrVer);
+		}
 		MySD = new MySData(this);
 		if(MySD.Proceed){
 			MySA = new MySActions(this);

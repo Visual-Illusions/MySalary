@@ -21,14 +21,13 @@
 */
 
 public class MySActions {
-	MySalary MyS;
-	MySData MySD;
-	Server server;
+	private MySalary MyS;
+	private MySData MySD;
+	private final Server server = etc.getServer();
 	boolean paying;
 	
 	public MySActions(MySalary MyS){
 		this.MyS = MyS;
-		server = etc.getServer();
 	}
 	
 	public void Initialize(){
@@ -52,10 +51,10 @@ public class MySActions {
 				MySD.W2s.put(name, true);
 			}
 		}
-		etc.getServer().messageAll("[§aMySalary§f]§2 PAYDAY!§b CHECKS ARE HERE!");
+		server.messageAll("[§aMySalary§f]§2 PAYDAY!§b CHECKS ARE HERE!");
 		MyS.log.info("[MySalary] PAYDAY! CHECKS ARE HERE!");
 		if(MySD.Claim){
-			etc.getServer().messageAll("[§aMySalary§f]§b Use §e/mys claim§b to get your check!");
+			server.messageAll("[§aMySalary§f]§b Use §e/mys claim§b to get your check!");
 		}
 		paying = false;
 	}
