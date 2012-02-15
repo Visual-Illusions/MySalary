@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 /**
@@ -22,22 +27,23 @@ import java.util.logging.Logger;
 */
 
 public class MySalary extends Plugin{
-	Logger log = Logger.getLogger("Minecraft");
+	protected final Logger log = Logger.getLogger("Minecraft");
 	
-	MySActions MySA;
-	MySData MySD;
-	MySListener MySL;
-	MySTimer MyST;
+	protected MySActions MySA;
+	protected MySData MySD;
+	protected MySListener MySL;
+	protected MySTimer MyST;
 	
-	String version = "1.1";
+	protected final String version = "1.2";
+	protected String CurrVer = "1.2";
 	
 	public void enable(){
+		log.info("[MySalary] by darkdiplomat enabled!");
 		MySD = new MySData(this);
 		if(MySD.Proceed){
 			MySA = new MySActions(this);
 			MySL = new MySListener(this);
 			MyST = new MySTimer(this);
-			log.info("[MySalary] by darkdiplomat enabled!");
 		}
 	}
 	
@@ -61,5 +67,34 @@ public class MySalary extends Plugin{
 			etc.getLoader().addListener(PluginLoader.Hook.SERVERCOMMAND, MySL, this, PluginListener.Priority.MEDIUM);
 			log.info("[MySalary] initialized!");
 		}
+		else{
+			etc.getLoader().disablePlugin("MySalary");
+		}
+	}
+	
+	public boolean isLatest(){
+		String address = "http://www.visualillusionsent.net/cmod_plugins/Versions.html";
+		URL url = null;
+		try {
+			url = new URL(address);
+		} catch (MalformedURLException e) {
+			return true;
+		}
+		String[] Vpre = new String[1]; 
+		BufferedReader in;
+		try {
+			in = new BufferedReader(new InputStreamReader(url.openStream()));
+			String inputLine;
+			while ((inputLine = in.readLine()) != null) {
+				if (inputLine.contains("MySalary=")){
+					Vpre = inputLine.split("=");
+					CurrVer = Vpre[1].replace("</p>", "");
+				}
+			}
+			in.close();
+		} catch (IOException e) {
+			return true;
+		}
+		return (version.equals(CurrVer));
 	}
 }

@@ -80,7 +80,6 @@ public class MySData {
 		}
 		if(!Proceed){
 			log.warning("[MySalary] No Sutible Economy Plugin Found! Disabling!");
-			loader.getPlugin("MySalary").disable();
 		}
 	}
 	

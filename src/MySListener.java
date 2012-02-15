@@ -38,6 +38,9 @@ public class MySListener extends PluginListener{
 		if((cmd[0].equalsIgnoreCase("/MySalary"))||(cmd[0].equalsIgnoreCase("/MyS"))){
 			if(cmd.length == 1){
 				player.sendMessage("§a-----§fMySalary §a-§f Version: "+MyS.version+"§a-----");
+				if(!MyS.isLatest() && player.isAdmin()){
+					player.sendMessage("§a-----§fThe is an update! §a-§f Version: "+MyS.CurrVer+"§a-----");
+				}
 				if(MySD.GPay){
 					if(MySD.GroupPay.containsKey(player.getGroups()[0])){
 						double pay = MySD.GroupPay.get(player.getGroups()[0]);
