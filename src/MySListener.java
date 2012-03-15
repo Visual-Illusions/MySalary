@@ -1,29 +1,8 @@
 
-/**
-* MySalary v1.x
-* Copyright (C) 2012 Visual Illusions Entertainment
-* @author darkdiplomat <darkdiplomat@visualillusionsent.net>
-* 
-* This file is part of MySalary
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see http://www.gnu.org/copyleft/gpl.html.
-*/
-
 public class MySListener extends PluginListener{
-	MySalary MyS;
-	MySActions MySA;
-	MySData MySD;
+	private MySalary MyS;
+	private MySActions MySA;
+	private MySData MySD;
 	
 	public MySListener(MySalary MyS){
 		this.MyS = MyS;
@@ -39,11 +18,12 @@ public class MySListener extends PluginListener{
 			if(cmd.length == 1){
 				player.sendMessage("§a-----§fMySalary §a-§f Version: "+MyS.version+"§a-----");
 				if(!MyS.isLatest() && player.isAdmin()){
-					player.sendMessage("§a-----§fThe is an update! §a-§f Version: "+MyS.CurrVer+"§a-----");
+					player.sendMessage("§a-----§fThe is an update! §a-§f Version: "+MyS.currver+"§a-----");
 				}
 				if(MySD.GPay){
-					if(MySD.GroupPay.containsKey(player.getGroups()[0])){
-						double pay = MySD.GroupPay.get(player.getGroups()[0]);
+			        String group = (player.getGroups() != null ? player.getGroups()[0] : etc.getDataSource().getDefaultGroup().Name);
+					if(MySD.GroupPay.containsKey(group)){
+						double pay = MySD.GroupPay.get(group);
 						if(MySD.dCo){
 							player.sendMessage("§aYour Salary is: §e"+priceForm(pay)+" "+MySD.getMoneyName());
 						}
@@ -113,15 +93,17 @@ public class MySListener extends PluginListener{
 	}
 	
 	public void onLogin(Player player){
-		if(!MySD.W2s.containsKey(player.getName())){
-			MySD.W2s.put(player.getName(), false);
+	    String name = player.getName();
+	    String group = (player.getGroups() != null ? player.getGroups()[0] : etc.getDataSource().getDefaultGroup().Name);
+		if(!MySD.W2s.containsKey(name)){
+			MySD.W2s.put(name, false);
 		}
 		
-		if(!MySD.Employer.containsKey(player.getName())){
-			MySD.Employer.put(player.getName(), player.getGroups()[0]);
+		if(!MySD.Employer.containsKey(name)){
+			MySD.Employer.put(name, group);
 		}
-		else if(!MySD.Employer.get(player.getName()).equals(player.getGroups()[0])){
-			MySD.Employer.put(player.getName(), player.getGroups()[0]);
+		else if(!MySD.Employer.get(name).equals(group)){
+			MySD.Employer.put(name, group);
 		}
 	}
 	
@@ -164,3 +146,24 @@ public class MySListener extends PluginListener{
 		return newprice;
 	}
 }
+
+/*******************************************************************************\
+* MySalary                                                                       *
+* Copyright (C) 2011-2012 Visual Illusions Entertainment                        *
+* @author darkdiplomat <darkdiplomat@visualillusionsent.net>                    *
+*                                                                               *
+* This file is part of MySalary.                                                 *                       
+*                                                                               *
+* This program is free software: you can redistribute it and/or modify          *
+* it under the terms of the GNU General Public License as published by          *
+* the Free Software Foundation, either version 3 of the License, or             *
+* (at your option) any later version.                                           *
+*                                                                               *
+* This program is distributed in the hope that it will be useful,               *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of                *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU General Public License for more details.                                  *
+*                                                                               *
+* You should have received a copy of the GNU General Public License             *
+* along with this program.  If not, see http://www.gnu.org/licenses/gpl.html.   *
+\*******************************************************************************/

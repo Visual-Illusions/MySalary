@@ -1,30 +1,7 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
-
-/**
-* MySalary v1.x
-* Copyright (C) 2012 Visual Illusions Entertainment
-* @author darkdiplomat <darkdiplomat@visualillusionsent.net>
-* 
-* This file is part of MySalary
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see http://www.gnu.org/copyleft/gpl.html.
-*/
 
 public class MySalary extends Plugin{
 	protected final Logger log = Logger.getLogger("Minecraft");
@@ -34,13 +11,14 @@ public class MySalary extends Plugin{
 	protected MySListener MySL;
 	protected MySTimer MyST;
 	
-	protected final String version = "1.2";
-	protected String CurrVer = "1.2";
+	public final String name = "MySalary";
+	public final String version = "1.2";
+	protected String currver = version;
 	
 	public void enable(){
-		log.info("[MySalary] v"+version+" by darkdiplomat enabled!");
+		log.info("[MySalary] v"+version+" by DarkDiplomat enabled!");
 		if(!isLatest()){
-			log.info("[MySalary] - There is an update available! Current = " + CurrVer);
+			log.info("[MySalary] - There is an update available! Current = " + currver);
 		}
 		MySD = new MySData(this);
 		if(MySD.Proceed){
@@ -76,28 +54,38 @@ public class MySalary extends Plugin{
 	}
 	
 	public boolean isLatest(){
-		String address = "http://www.visualillusionsent.net/cmod_plugins/Versions.html";
-		URL url = null;
-		try {
-			url = new URL(address);
-		} catch (MalformedURLException e) {
-			return true;
-		}
-		String[] Vpre = new String[1]; 
-		BufferedReader in;
-		try {
-			in = new BufferedReader(new InputStreamReader(url.openStream()));
-			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
-				if (inputLine.contains("MySalary=")){
-					Vpre = inputLine.split("=");
-					CurrVer = Vpre[1].replace("</p>", "");
-				}
-			}
-			in.close();
-		} catch (IOException e) {
-			return true;
-		}
-		return (version.equals(CurrVer));
-	}
+        try{
+            BufferedReader in = new BufferedReader(new InputStreamReader(new URL("http://visualillusionsent.net/cmod_plugins/versions.php?plugin="+name).openStream()));
+            String inputLine;
+            if ((inputLine = in.readLine()) != null) {
+                currver = inputLine;
+            }
+            in.close();
+            return Float.valueOf(version.replace("_", "")) >= Float.valueOf(currver.replace("_", ""));
+        } 
+        catch (Exception E) {
+        }
+        return true;
+    }
 }
+
+/*******************************************************************************\
+* MySalary                                                                      *
+* Copyright (C) 2011-2012 Visual Illusions Entertainment                        *
+* @author darkdiplomat <darkdiplomat@visualillusionsent.net>                    *
+*                                                                               *
+* This file is part of MySalary.                                                *                       
+*                                                                               *
+* This program is free software: you can redistribute it and/or modify          *
+* it under the terms of the GNU General Public License as published by          *
+* the Free Software Foundation, either version 3 of the License, or             *
+* (at your option) any later version.                                           *
+*                                                                               *
+* This program is distributed in the hope that it will be useful,               *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of                *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU General Public License for more details.                                  *
+*                                                                               *
+* You should have received a copy of the GNU General Public License             *
+* along with this program.  If not, see http://www.gnu.org/licenses/gpl.html.   *
+\*******************************************************************************/

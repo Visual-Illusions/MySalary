@@ -1,25 +1,4 @@
 
-/**
-* MySalary v1.x
-* Copyright (C) 2012 Visual Illusions Entertainment
-* @author darkdiplomat <darkdiplomat@visualillusionsent.net>
-* 
-* This file is part of MySalary
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see http://www.gnu.org/copyleft/gpl.html.
-*/
-
 public class MySActions {
 	private MySalary MyS;
 	private MySData MySD;
@@ -61,10 +40,10 @@ public class MySActions {
 	
 	public boolean ClaimCheck(Player player){
 		String name = player.getName();
-		String group = player.getGroups()[0];
+		String group = (player.getGroups() != null ? player.getGroups()[0] : etc.getDataSource().getDefaultGroup().Name);
 		if(MySD.GPay){
-			if(MySD.GroupPay.containsKey(player.getGroups()[0])){
-				double pay = MySD.GroupPay.get(player.getGroups()[0]);
+			if(MySD.GroupPay.containsKey(name)){
+				double pay = MySD.GroupPay.get(group);
 				if(MySD.gpayClaim(name, group)){
 					if(MySD.dCo){
 						player.sendMessage("[§aMySalary§f]§b Here is your check for: §e"+priceForm(pay)+" "+MySD.getMoneyName());
@@ -186,3 +165,24 @@ public class MySActions {
 		return newprice;
 	}
 }
+
+/*******************************************************************************\
+* MySalary                                                                      *
+* Copyright (C) 2011-2012 Visual Illusions Entertainment                        *
+* @author darkdiplomat <darkdiplomat@visualillusionsent.net>                    *
+*                                                                               *
+* This file is part of MySalary.                                                *                       
+*                                                                               *
+* This program is free software: you can redistribute it and/or modify          *
+* it under the terms of the GNU General Public License as published by          *
+* the Free Software Foundation, either version 3 of the License, or             *
+* (at your option) any later version.                                           *
+*                                                                               *
+* This program is distributed in the hope that it will be useful,               *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of                *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU General Public License for more details.                                  *
+*                                                                               *
+* You should have received a copy of the GNU General Public License             *
+* along with this program.  If not, see http://www.gnu.org/licenses/gpl.html.   *
+\*******************************************************************************/
