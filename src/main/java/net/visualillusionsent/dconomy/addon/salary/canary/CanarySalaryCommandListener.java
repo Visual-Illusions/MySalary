@@ -43,9 +43,9 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
         Canary.commands().registerCommands(this, plugin, false);
     }
 
-    @Command(aliases = {"mysalary", "mys"},
+    @Command(aliases = { "mysalary", "mys" },
             description = "MySalary information/main Command",
-            permissions = {"mysalary.getpaid"},
+            permissions = { "mysalary.getpaid" },
             toolTip = "/mysalary [subcommand]")
     public final void information(MessageReceiver msgrec, String[] args) {
         for (String msg : about) {
@@ -54,9 +54,11 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
                 Boolean isLatest = vc.isLatest();
                 if (isLatest == null) {
                     msgrec.message(center(Colors.GRAY + "VersionCheckerError: " + vc.getErrorMessage()));
-                } else if (!isLatest) {
+                }
+                else if (!isLatest) {
                     msgrec.message(center(Colors.GRAY + vc.getUpdateAvailibleMessage()));
-                } else {
+                }
+                else {
                     msgrec.message(center(Colors.LIGHT_GREEN + "Latest Version Installed"));
                 }
 
@@ -67,22 +69,30 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
                         double salary = getCS().getCfg().getGroupPay(((Player) msgrec).getGroup().getName());
                         if (salary > 0) {
                             msgrec.message(MessageFormat.format(salary_msg, salary));
-                        } else {
+                        }
+                        else {
                             msgrec.notice("You do not have a salary.");
                         }
                     }
-                } else {
+                    else {
+                        if (getCS().getCfg().payServer()) {
+                            msgrec.message(MessageFormat.format(salary_msg, getCS().getCfg().getGroupPay("SERVER")));
+                        }
+                    }
+                }
+                else {
                     msgrec.message(MessageFormat.format(salary_msg, getCS().getCfg().getDefaultPayAmount()));
                 }
-            } else {
+            }
+            else {
                 msgrec.message(msg);
             }
         }
     }
 
-    @Command(aliases = {"claim"},
+    @Command(aliases = { "claim" },
             description = "Used to claim pending checks",
-            permissions = {"mysalary.getpaid"},
+            permissions = { "mysalary.getpaid" },
             parent = "mysalary",
             toolTip = "/mysalary claim")
     public final void claimcheck(MessageReceiver msgrec, String[] args) {
@@ -90,26 +100,28 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
             double result = getCS().getFinance().checkPendingAndPay(msgrec.getName());
             if (result > 0) {
                 msgrec.message(MessageFormat.format(salary_pay, result));
-            } else {
+            }
+            else {
                 msgrec.notice("You do not have any pending checks.");
             }
-        } else {
+        }
+        else {
             msgrec.notice("Checks are auto-deposited. Claiming is not required.");
         }
     }
 
-    @Command(aliases = {"broadcast"},
+    @Command(aliases = { "broadcast" },
             description = "Broadcasts time until next paycheck",
-            permissions = {"mysalary.admin"},
+            permissions = { "mysalary.admin" },
             parent = "mysalary",
             toolTip = "/mysalary broadcast")
     public final void broadcast(MessageReceiver msgrec, String[] args) {
         Canary.getServer().broadcastMessage("[§AMySalary§F]§A Next PayCheck in: " + Colors.ORANGE + getCS().getTimeUntil());
     }
 
-    @Command(aliases = {"forcepay"},
+    @Command(aliases = { "forcepay" },
             description = "Forces a pay out of checks",
-            permissions = {"mysalary.admin"},
+            permissions = { "mysalary.admin" },
             parent = "mysalary",
             toolTip = "/mysalary forcepay [reset]")
     public final void forcepay(MessageReceiver msgrec, String[] args) {

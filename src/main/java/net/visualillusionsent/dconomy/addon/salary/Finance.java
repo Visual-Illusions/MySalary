@@ -52,16 +52,19 @@ public final class Finance {
         mys.broadcastPayDay();
         for (Wallet wallet : WalletHandler.getWallets().values()) {
             // check wallet lock status
-            if (wallet.isLocked() && !mys.getCfg().payIfLocked()) continue;
+            if (wallet.isLocked() && !mys.getCfg().payIfLocked())
+                continue;
             double pay = mys.getCfg().getDefaultPayAmount();
             // check if group amount is needed
             if (mys.getCfg().isGroupSpecificEnabled()) {
                 String group = mys.getGroupNameForUser(wallet.getOwner());
                 // if no group, ignore wallet and continue
-                if (group == null) continue;
+                if (group == null)
+                    continue;
                 pay = mys.getCfg().getGroupPay(group);
                 // if group doesn't have an amount, ignore it and continue
-                if (pay <= 0) continue;
+                if (pay <= 0)
+                    continue;
             }
 
             // Check if player's are required to claim their pay
@@ -71,13 +74,16 @@ public final class Finance {
                     // if an owner has a pending check, add to it
                     if (_pending.containsKey(wallet.getOwner())) {
                         _pending.setDouble(wallet.getOwner(), _pending.getDouble(wallet.getOwner()) + pay);
-                    } else { // just add them to the list
+                    }
+                    else { // just add them to the list
                         _pending.setDouble(wallet.getOwner(), pay);
                     }
-                } else { // accumulating is disabled, so the current pay is set and the old check is burned
+                }
+                else { // accumulating is disabled, so the current pay is set and the old check is burned
                     _pending.setDouble(wallet.getOwner(), pay);
                 }
-            } else {
+            }
+            else {
                 wallet.deposit(pay);
                 dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer().getUser(wallet.getOwner()), PLUGIN_DEPOSIT, pay));
                 mys.messageUser(wallet.getOwner(), MessageFormat.format("\u00A7AYou have received\u00A76 {0,number,#.##} {1}", pay, dCoBase.getProperties().getString("money.name")));
@@ -87,7 +93,8 @@ public final class Finance {
             double serv_pay = mys.getCfg().getDefaultPayAmount();
             if (mys.getCfg().isGroupSpecificEnabled()) {
                 serv_pay = mys.getCfg().getGroupPay("SERVER");
-                if (serv_pay <= 0) return;
+                if (serv_pay <= 0)
+                    return;
             }
             WalletHandler.getWalletByName("SERVER").deposit(serv_pay);
             dCoBase.getServer().newTransaction(new WalletTransaction(mys, (ModUser) dCoBase.getServer(), PLUGIN_DEPOSIT, serv_pay));

@@ -44,16 +44,19 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     public boolean enable() {
         try {
             myscfg = new MySalaryConfiguration(this);
-        } catch (IOException ioex) {
+        }
+        catch (IOException ioex) {
             getLogman().logSevere(ioex.getMessage());
             return false;
-        } catch (UtilityException uex) {
+        }
+        catch (UtilityException uex) {
             getLogman().logStacktrace(uex.getMessage(), uex);
         }
         finance = new Finance(this);
         try {
             new CanarySalaryCommandListener(this);
-        } catch (CommandDependencyException cdex) {
+        }
+        catch (CommandDependencyException cdex) {
             getLogman().logStacktrace("Failed to register commands...", cdex);
             return false;
         }
@@ -74,7 +77,8 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     public void broadcastPayDay() {
         if (myscfg.isRequireClaimEnabled()) {
             Canary.getServer().broadcastMessage("[§AMySalary§F]§2 PAYDAY!§6 CHECKS ARE READY FOR PICKUP!");
-        } else {
+        }
+        else {
             Canary.getServer().broadcastMessage("[§AMySalary§F]§2 PAYDAY!§6 CHECKS ARE BEING DEPOSITED!");
         }
         getLogman().logInfo("Players paid!");
