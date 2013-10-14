@@ -1,0 +1,8 @@
+/bin
+/target
+/buildNumber.properties
+/.settings
+/.classpath
+/.project
+/.idea
+*.iml

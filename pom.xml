@@ -1,0 +1,294 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.visualillusionsent</groupId>
+    <artifactId>mysalary</artifactId>
+    <version>2.0</version>
+    <name>MySalary</name>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <program.status>BETA</program.status>
+        <build.number>0-dev</build.number>
+        <canary.main.class>${project.groupId}.dconomy.addon.salary.canary.CanarySalary</canary.main.class>
+        <vimcplugin.version>1.0u1</vimcplugin.version>
+        <dCo.version>3.0</dCo.version>
+        <build.number>0-dev</build.number>
+        <version.check.url>http://visualillusionsent.net/minecraft/plugins/</version.check.url>
+        <devs>darkdiplomat</devs>
+    </properties>
+    <description>Salary Add-On for dConomy3</description>
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <url>http://www.gnu.org/licenses/gpl.html</url>
+            <comments>
+                MySalary is free software: you can redistribute it and/or modify
+                it under the terms of the GNU General Public License as published by
+                the Free Software Foundation, either version 3 of the License, or
+                (at your option) any later version.
+
+                MySalary is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+                without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+                See the GNU General Public License for more details.
+            </comments>
+        </license>
+    </licenses>
+    <url>http://wiki.visualillusionsent.net/MySalary</url>
+    <inceptionYear>2011</inceptionYear>
+    <organization>
+        <name>Visual Illusions Entertainment</name>
+        <url>http://visualillusionsent.net</url>
+    </organization>
+    <scm>
+        <url>https://github.com/Visual-Illusions/MySalary</url>
+        <connection>GitHub</connection>
+        <developerConnection>scm:git:ssh://git@github.com:Visual-Illusions/MySalary.git</developerConnection>
+    </scm>
+    <issueManagement>
+        <url>http://github.com/Visual-Illusions/MySalary/issues</url>
+        <system>GitHub Issues Tracker</system>
+    </issueManagement>
+    <ciManagement>
+        <url>http://ci.visualillusionsent.net/job/MySalary</url>
+        <system>Jenkins</system>
+    </ciManagement>
+    <distributionManagement>
+        <repository>
+            <id>vi-repo</id>
+            <url>ftp://repo.visualillusionsent.net/</url>
+        </repository>
+    </distributionManagement>
+    <repositories>
+        <repository>
+            <id>vi-repo</id>
+            <name>Visual Illusions Repository</name>
+            <url>http://repo.visualillusionsent.net/</url>
+            <releases>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>net.visualillusionsent</groupId>
+            <artifactId>dconomy</artifactId>
+            <version>${dCo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.visualillusionsent</groupId>
+            <artifactId>vimcplugin</artifactId>
+            <version>${vimcplugin.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>${project.name}-${project.version}-${program.status}-b${build.number}</finalName>
+        <plugins>
+            <!-- Timestamp for year -->
+            <plugin>
+                <groupId>com.keyboardsamurais.maven</groupId>
+                <artifactId>maven-timestamp-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <propertyName>current.year</propertyName>
+                    <timestampPattern>yyyy</timestampPattern>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>pre-clean</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Update Plugin/Mod Description Files -->
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.2</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includes>
+                        <!-- CanaryMod -->
+                        <include>target/**/*.inf</include>
+                    </includes>
+                    <replacements>
+                        <replacement>
+                            <token>{plugin.version}</token>
+                            <value>${project.version}</value>
+                        </replacement>
+                        <replacement>
+                            <token>{wiki}</token>
+                            <value>${project.url}</value>
+                        </replacement>
+                        <replacement>
+                            <token>{issues}</token>
+                            <value>${project.issueManagement.url}</value>
+                        </replacement>
+                        <replace>
+                            <token>{version.check.url}</token>
+                            <value>${version.check.url}</value>
+                        </replace>
+                        <replace>
+                            <token>{program.status}</token>
+                            <value>${program.status}</value>
+                        </replace>
+                        <replace>
+                            <token>{build}</token>
+                            <value>${build.number}</value>
+                        </replace>
+                        <replace>
+                            <token>{build.time}</token>
+                            <value>${maven.build.timestamp}</value>
+                        </replace>
+                        <replace>
+                            <token>{devs}</token>
+                            <value>${devs}</value>
+                        </replace>
+                        <replace>
+                            <token>{copyright.years}</token>
+                            <value>${project.inceptionYear}-${current.year}</value>
+                        </replace>
+                        <replace>
+                            <token>{name}</token>
+                            <value>${project.name}</value>
+                        </replace>
+                        <replace>
+                            <token>{canary.main.class}</token>
+                            <value>${canary.main.class}</value>
+                        </replace>
+                    </replacements>
+                    <regex>false</regex>
+                </configuration>
+            </plugin>
+            <!-- Compile plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <addClasspath>false</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <Title>${project.name}</Title>
+                            <Version>${project.version}</Version>
+                            <Build>${build.number}</Build>
+                            <Vendor>Visual Illusions Entertainment</Vendor>
+                            <Built-By>${user.name}</Built-By>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.10.b1</version>
+                <executions>
+                    <execution>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <quiet>false</quiet>
+                    <encoding>UTF-8</encoding>
+                    <strictCheck>true</strictCheck>
+                    <header>${basedir}/HEADER_GPL.txt</header>
+                    <keywords>
+                        <keyword>${project.name}</keyword>
+                        <keyword>license</keyword>
+                    </keywords>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+                    <properties>
+                        <name>${project.name}</name>
+                        <copyright>Copyright © ${project.inceptionYear}-${current.year} Visual Illusions Entertainment
+                        </copyright>
+                    </properties>
+                    <includes>
+                        <include>src/main/java/**</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <!-- Need to shade in the needed classes from Visual Illusions Minecraft Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <!-- Only need to shade the VIMCPlugin stuff -->
+                                    <include>net.visualillusionsent:vimcplugin</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>net.visualillusionsent:vimcplugin</artifact>
+                                    <includes>
+                                        <include>net/visualillusionsent/minecraft/plugin/canary/**</include>
+                                    </includes>
+                                    <excludes>
+                                        <!-- Bukkit/Spout are unused at this time -->
+                                        <exclude>net/visualillusionsent/minecraft/plugin/bukkit/**</exclude>
+                                        <exclude>net/visualillusionsent/minecraft/plugin/spout/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <!-- Relocate the classes to appropriate packages -->
+                            <relocations>
+                                <!-- Canary -->
+                                <relocation>
+                                    <pattern>net.visualillusionsent.minecraft.plugin.canary</pattern>
+                                    <shadedPattern>net.visualillusionsent.dconomy.addon.bank.canary</shadedPattern>
+                                </relocation>
+                                <!-- don't need Bukkit or Spout at this time
+                                <relocation>
+                                    <pattern>net.visualillusionsent.minecraft.plugin.bukkit</pattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}.bukkit</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.visualillusionsent.minecraft.plugin.spout</pattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}.spout</shadedPattern>
+                                </relocation>
+                                -->
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
