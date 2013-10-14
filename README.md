@@ -5,14 +5,14 @@ Pay your players a salary
 
 MySalary 2 is a dConomy 3 add-on.
 
-(C) 2012 - 2012 Visual Illusions Entertainment
+(C) 2011 - 2012 Visual Illusions Entertainment
 
 Licensed under the GNU General Public License v3
 
 License
 ---------
 MySalary 2
-Copyright (C) 2012 - 2013 Visual Illusions Entertainment
+Copyright (C) 2011 - 2013 Visual Illusions Entertainment
 
 Author: Jason Jones (darkdiplomat) <darkdiplomat@visualillusionsent.net>
 
