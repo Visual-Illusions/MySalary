@@ -27,6 +27,9 @@ import net.visualillusionsent.dconomy.addon.salary.MySalary;
 import net.visualillusionsent.dconomy.addon.salary.MySalaryConfiguration;
 import net.visualillusionsent.dconomy.modinterface.ModType;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
+import net.visualillusionsent.utils.UtilityException;
+
+import java.io.IOException;
 
 /**
  * MySalary main Canary Plugin class
@@ -39,7 +42,14 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
 
     @Override
     public boolean enable() {
-        myscfg = new MySalaryConfiguration(this);
+        try {
+            myscfg = new MySalaryConfiguration(this);
+        } catch (IOException ioex) {
+            getLogman().logSevere(ioex.getMessage());
+            return false;
+        } catch (UtilityException uex) {
+            getLogman().logStacktrace(uex.getMessage(), uex);
+        }
         finance = new Finance(this);
         try {
             new CanarySalaryCommandListener(this);

@@ -21,7 +21,9 @@ import net.visualillusionsent.utils.FileUtils;
 import net.visualillusionsent.utils.PropertiesFile;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 /**
  * MySalary Configuration container
@@ -31,25 +33,32 @@ import java.util.concurrent.TimeUnit;
 public final class MySalaryConfiguration {
     private PropertiesFile myscfg;
 
-    public MySalaryConfiguration(MySalary mys) {
+    public MySalaryConfiguration(MySalary mys) throws IOException {
         loadCfg(mys);
     }
 
-    private final void loadCfg(MySalary mys) {
+    private final void loadCfg(MySalary mys) throws IOException {
         File cfg = new File("config/MySalary/MySalary.cfg");
         if (!cfg.exists()) {
             if (!new File("config/MySalary/").mkdirs()) {
-                //throw error
+                throw new IOException("Failed to create directories for MySalary.cfg");
             }
             FileUtils.cloneFileFromJar(mys.getJarPath(), "default_config.cfg", "config/MySalary/MySalary.cfg");
         }
         myscfg = new PropertiesFile("config/MySalary/MySalary.cfg");
 
-        //TODO: check config
+        myscfg.getLong("delay", 120);
+        myscfg.getDouble("pay.amount", 5.95);
+        myscfg.getBoolean("require.claim", false);
+        myscfg.getBoolean("group.specific.pay", false);
+        myscfg.getBoolean("accumulate.checks", false);
+        myscfg.getBoolean("pay.locked", false);
+        myscfg.getBoolean("pay.server", false);
+        myscfg.save(); // Saving will only occur if something was actually changed
     }
 
     public final long getDelay() {
-        return TimeUnit.MINUTES.toMillis(myscfg.getLong("delay")); // delay is stored in minutes but needs to be in milliseconds
+        return MINUTES.toMillis(myscfg.getLong("delay")); // delay is stored in minutes but needs to be in milliseconds
     }
 
     public final double getDefaultPayAmount() {
