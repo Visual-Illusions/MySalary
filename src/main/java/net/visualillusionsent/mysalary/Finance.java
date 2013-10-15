@@ -15,13 +15,14 @@
  * You should have received a copy of the GNU General Public License along with MySalary.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
-package net.visualillusionsent.dconomy.addon.salary;
+package net.visualillusionsent.mysalary;
 
 import net.visualillusionsent.dconomy.accounting.wallet.Wallet;
 import net.visualillusionsent.dconomy.accounting.wallet.WalletHandler;
 import net.visualillusionsent.dconomy.accounting.wallet.WalletTransaction;
 import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.dconomy.modinterface.ModUser;
+import net.visualillusionsent.utils.DateUtils;
 import net.visualillusionsent.utils.PropertiesFile;
 
 import java.text.MessageFormat;
@@ -45,7 +46,7 @@ public final class Finance {
         _reset = new PropertiesFile("config/MySalary/.reset.mys");
         _reset.getLong("timer.reset", -1);
         _pending = new PropertiesFile("config/MySalary/.pending.mys");
-        reset();
+        reset(true);
     }
 
     public final void payout() {
@@ -101,13 +102,13 @@ public final class Finance {
         }
     }
 
-    public final void reset() {
+    public final void reset(boolean booting) {
         if (timer != null) {
             timer.cancel();
         }
         timer = new Timer();
         long period = mys.getCfg().getDelay();
-        if (_reset.getLong("timer.reset") > -1) {
+        if (_reset.getLong("timer.reset") > -1 && booting) {
             period = _reset.getLong("timer.reset") - System.currentTimeMillis();
             if (period < 0) {
                 period = 60000;
@@ -128,8 +129,8 @@ public final class Finance {
         return -1;
     }
 
-    public final long getReset() {
-        return _reset.getLong("timer.reset");
+    public final String getTimeUntil() {
+        return DateUtils.getTimeUntil((_reset.getLong("timer.reset") - System.currentTimeMillis()) / 1000);
     }
 
     public final void close() {

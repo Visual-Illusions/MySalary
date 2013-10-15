@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along with MySalary.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
-package net.visualillusionsent.dconomy.addon.salary;
+package net.visualillusionsent.mysalary;
 
 import net.visualillusionsent.dconomy.modinterface.ModUser;
 

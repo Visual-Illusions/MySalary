@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU General Public License along with MySalary.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
-package net.visualillusionsent.dconomy.addon.salary;
+package net.visualillusionsent.mysalary;
 
+import net.visualillusionsent.utils.BooleanUtils;
 import net.visualillusionsent.utils.FileUtils;
 import net.visualillusionsent.utils.PropertiesFile;
 
@@ -90,5 +91,28 @@ public final class MySalaryConfiguration {
             return myscfg.getDouble(group_name);
         }
         return -1;
+    }
+
+    public final void setProperty(String key, String value) throws IllegalArgumentException {
+        if (key.equals("delay")) {
+            try {
+                myscfg.setLong("delay", Long.valueOf(value));
+            }
+            catch (NumberFormatException nfex) {
+                throw new IllegalArgumentException("Value is not of a type compatible with the key. (Expected: long [number])");
+            }
+        }
+        else if (key.matches("[require.claim|group.specific.pay|accumulate.checks|pay.locked|pay.server]")) {
+            myscfg.setBoolean(key, BooleanUtils.parseBoolean(value));
+        }
+        else {
+            try {
+                myscfg.setDouble(key, Double.valueOf(value));
+            }
+            catch (NumberFormatException nfex) {
+                throw new IllegalArgumentException("Value is not of a type compatible with the key. (Expected: double [number])");
+            }
+        }
+        myscfg.save();
     }
 }

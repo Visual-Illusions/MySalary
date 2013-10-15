@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along with MySalary.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
-package net.visualillusionsent.dconomy.addon.salary.canary;
+package net.visualillusionsent.mysalary.canary;
 
 import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
@@ -63,7 +63,7 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
                 }
 
                 //Inject MySalary messages
-                msgrec.message(Colors.LIGHT_GREEN + "Next PayCheck in: " + Colors.ORANGE + getCS().getTimeUntil());
+                msgrec.message(Colors.LIGHT_GREEN + "Next PayCheck in: " + Colors.ORANGE + getCS().getFinance().getTimeUntil());
                 if (getCS().getCfg().isGroupSpecificEnabled()) {
                     if (msgrec instanceof Player) {
                         double salary = getCS().getCfg().getGroupPay(((Player) msgrec).getGroup().getName());
@@ -116,7 +116,7 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
             parent = "mysalary",
             toolTip = "/mysalary broadcast")
     public final void broadcast(MessageReceiver msgrec, String[] args) {
-        Canary.getServer().broadcastMessage("[§AMySalary§F]§A Next PayCheck in: " + Colors.ORANGE + getCS().getTimeUntil());
+        Canary.getServer().broadcastMessage("[§AMySalary§F]§A Next PayCheck in: " + Colors.ORANGE + getCS().getFinance().getTimeUntil());
     }
 
     @Command(aliases = { "forcepay" },
@@ -125,10 +125,27 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
             parent = "mysalary",
             toolTip = "/mysalary forcepay [reset]")
     public final void forcepay(MessageReceiver msgrec, String[] args) {
-        if (args.length == 1 && args[0].toLowerCase().equals("reset")) {
-            getCS().getFinance().reset();
+        if (args.length == 1 && args[1].toLowerCase().equals("reset")) {
+            getCS().getFinance().reset(false);
         }
         getCS().getFinance().payout();
+    }
+
+    @Command(aliases = { "setprop" },
+            description = "Sets/changes a property value",
+            permissions = { "mysalary.admin" },
+            parent = "mysalary",
+            toolTip = "/mysalary setprop <key> <value>",
+            min = 2
+    )
+    public final void setProp(MessageReceiver msgrec, String[] args) {
+        try {
+            getCS().getCfg().setProperty(args[1], args[2]);
+            msgrec.message(Colors.ORANGE + args[1] + Colors.LIGHT_GREEN + " is now set to " + Colors.YELLOW + args[2]);
+        }
+        catch (IllegalArgumentException iaex) {
+            msgrec.notice(iaex.getMessage());
+        }
     }
 
     private final CanarySalary getCS() {

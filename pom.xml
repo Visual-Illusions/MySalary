@@ -9,7 +9,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <program.status>BETA</program.status>
         <build.number>0-dev</build.number>
-        <canary.main.class>${project.groupId}.dconomy.addon.salary.canary.CanarySalary</canary.main.class>
+        <canary.main.class>${project.groupId}.${project.artifactId}.canary.CanarySalary</canary.main.class>
         <vimcplugin.version>1.0u1</vimcplugin.version>
         <dCo.version>3.0</dCo.version>
         <build.number>0-dev</build.number>
@@ -272,7 +272,7 @@
                                 <!-- Canary -->
                                 <relocation>
                                     <pattern>net.visualillusionsent.minecraft.plugin.canary</pattern>
-                                    <shadedPattern>net.visualillusionsent.dconomy.addon.bank.canary</shadedPattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}.canary</shadedPattern>
                                 </relocation>
                                 <!-- don't need Bukkit or Spout at this time
                                 <relocation>

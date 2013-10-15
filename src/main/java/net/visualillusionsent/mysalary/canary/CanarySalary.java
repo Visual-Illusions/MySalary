@@ -15,18 +15,17 @@
  * You should have received a copy of the GNU General Public License along with MySalary.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
-package net.visualillusionsent.dconomy.addon.salary.canary;
+package net.visualillusionsent.mysalary.canary;
 
 import net.canarymod.Canary;
-import net.canarymod.ToolBox;
 import net.canarymod.api.OfflinePlayer;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.commandsys.CommandDependencyException;
-import net.visualillusionsent.dconomy.addon.salary.Finance;
-import net.visualillusionsent.dconomy.addon.salary.MySalary;
-import net.visualillusionsent.dconomy.addon.salary.MySalaryConfiguration;
 import net.visualillusionsent.dconomy.modinterface.ModType;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
+import net.visualillusionsent.mysalary.Finance;
+import net.visualillusionsent.mysalary.MySalary;
+import net.visualillusionsent.mysalary.MySalaryConfiguration;
 import net.visualillusionsent.utils.UtilityException;
 
 import java.io.IOException;
@@ -104,10 +103,6 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     @Override
     public final Finance getFinance() {
         return finance;
-    }
-
-    public final String getTimeUntil() {
-        return ToolBox.getTimeUntil((finance.getReset() - System.currentTimeMillis()) / 1000); // reset needs to be in seconds
     }
 
     @Override
