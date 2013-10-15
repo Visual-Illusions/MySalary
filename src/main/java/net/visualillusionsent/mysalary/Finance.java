@@ -114,7 +114,9 @@ public final class Finance {
                 period = 60000;
             }
         }
-        _reset.setLong("timer.reset", System.currentTimeMillis() + mys.getCfg().getDelay());
+        else {
+            _reset.setLong("timer.reset", System.currentTimeMillis() + mys.getCfg().getDelay());
+        }
         timer.schedule(new SalaryTask(), period, mys.getCfg().getDelay());
     }
 

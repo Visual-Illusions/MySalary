@@ -125,7 +125,7 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
             parent = "mysalary",
             toolTip = "/mysalary forcepay [reset]")
     public final void forcepay(MessageReceiver msgrec, String[] args) {
-        if (args.length == 1 && args[1].toLowerCase().equals("reset")) {
+        if (args.length == 2 && args[1].toLowerCase().equals("reset")) {
             getCS().getFinance().reset(false);
         }
         getCS().getFinance().payout();

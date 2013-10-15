@@ -102,7 +102,7 @@ public final class MySalaryConfiguration {
                 throw new IllegalArgumentException("Value is not of a type compatible with the key. (Expected: long [number])");
             }
         }
-        else if (key.matches("[require.claim|group.specific.pay|accumulate.checks|pay.locked|pay.server]")) {
+        else if (key.matches("(require.claim|group.specific.pay|accumulate.checks|pay.locked|pay.server)")) {
             myscfg.setBoolean(key, BooleanUtils.parseBoolean(value));
         }
         else {
