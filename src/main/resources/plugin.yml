@@ -1,0 +1,54 @@
+﻿# {name} - Bukkit Plugin configuration file
+# Copyright © {copyright.years} Visual Illusions Entertainment
+name: {name}
+main: {bukkit.main.class}
+version: {plugin.version}
+author: Visual Illusions Entertainment
+website: {wiki}
+depend: [Vault, dConomy]
+
+# Visual Illusions Specific Stuff
+developers: {devs}
+build.number: {build}
+build.time: {build.time}
+program.status: {program.status}
+version.check.url: {version.check.url}
+issues.url: {issues}
+copyright.years: {copyright.years}
+# # #
+
+commands:
+  mysalary:
+    description: Main MySalary Command
+    usage: /mysalary [claim]
+    permission: mysalary.getpaid
+    aliases: [mys]
+  mysalary claim:
+    description: check claim command
+    usage: /mysalary claim
+    permission: mysalary.getpaid
+  mysalary broadcast:
+    description: broadcasts the time until next pay
+    usage: /mysalary broadcast
+    permission: mysalary.admin
+  mysalary forcepay:
+    description: forces payment of checks
+    usage: /mysalary forcepay [reset]
+    permission: mysalary.admin
+  mysalary setprop:
+    description: sets a MySalary property
+    usage: /mysalary setprop <key> <value>
+    permission: mysalary.admin
+
+permissions:
+  mysalary.*:
+    description: Grants access to everything MySalary
+    children:
+      mysalary.getpaid: true
+      mysalary.admin: true
+  mysalary.getpaid:
+    description: MySalary main permission
+    default: true
+  mysalary.admin:
+    description: Grants access to everything MySalary
+    default: op

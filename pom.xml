@@ -10,6 +10,7 @@
         <program.status>BETA</program.status>
         <build.number>0-dev</build.number>
         <canary.main.class>${project.groupId}.${project.artifactId}.canary.CanarySalary</canary.main.class>
+        <bukkit.main.class>${project.groupId}.${project.artifactId}.bukkit.BukkitSalary</bukkit.main.class>
         <vimcplugin.version>1.0u1</vimcplugin.version>
         <dCo.version>3.0</dCo.version>
         <build.number>0-dev</build.number>
@@ -82,6 +83,12 @@
             <artifactId>vimcplugin</artifactId>
             <version>${vimcplugin.version}</version>
         </dependency>
+        <!-- Bukkit requires Vault -->
+        <dependency>
+            <groupId>net.milkbowl</groupId>
+            <artifactId>vault</artifactId>
+            <version>1.2.27</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>${project.name}-${project.version}-${program.status}-b${build.number}</finalName>
@@ -121,6 +128,8 @@
                     <includes>
                         <!-- CanaryMod -->
                         <include>target/**/*.inf</include>
+                        <!-- Bukkit -->
+                        <include>target/**/*.yml</include>
                     </includes>
                     <replacements>
                         <replacement>
@@ -166,6 +175,10 @@
                         <replace>
                             <token>{canary.main.class}</token>
                             <value>${canary.main.class}</value>
+                        </replace>
+                        <replace>
+                            <token>{bukkit.main.class}</token>
+                            <value>${bukkit.main.class}</value>
                         </replace>
                     </replacements>
                     <regex>false</regex>
@@ -259,10 +272,10 @@
                                     <artifact>net.visualillusionsent:vimcplugin</artifact>
                                     <includes>
                                         <include>net/visualillusionsent/minecraft/plugin/canary/**</include>
+                                        <include>net/visualillusionsent/minecraft/plugin/bukkit/**</include>
                                     </includes>
                                     <excludes>
-                                        <!-- Bukkit/Spout are unused at this time -->
-                                        <exclude>net/visualillusionsent/minecraft/plugin/bukkit/**</exclude>
+                                        <!-- Spout is unused at this time -->
                                         <exclude>net/visualillusionsent/minecraft/plugin/spout/**</exclude>
                                     </excludes>
                                 </filter>
@@ -274,11 +287,11 @@
                                     <pattern>net.visualillusionsent.minecraft.plugin.canary</pattern>
                                     <shadedPattern>${project.groupId}.${project.artifactId}.canary</shadedPattern>
                                 </relocation>
-                                <!-- don't need Bukkit or Spout at this time
                                 <relocation>
                                     <pattern>net.visualillusionsent.minecraft.plugin.bukkit</pattern>
                                     <shadedPattern>${project.groupId}.${project.artifactId}.bukkit</shadedPattern>
                                 </relocation>
+                                <!-- don't need Spout at this time
                                 <relocation>
                                     <pattern>net.visualillusionsent.minecraft.plugin.spout</pattern>
                                     <shadedPattern>${project.groupId}.${project.artifactId}.spout</shadedPattern>

@@ -15,58 +15,48 @@
  * You should have received a copy of the GNU General Public License along with MySalary.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
-package net.visualillusionsent.mysalary.canary;
+package net.visualillusionsent.mysalary.bukkit;
 
-import net.canarymod.Canary;
-import net.canarymod.api.OfflinePlayer;
-import net.canarymod.api.entity.living.humanoid.Player;
-import net.canarymod.commandsys.CommandDependencyException;
+import net.milkbowl.vault.permission.Permission;
 import net.visualillusionsent.dconomy.modinterface.ModType;
-import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
+import net.visualillusionsent.minecraft.plugin.bukkit.VisualIllusionsBukkitPlugin;
 import net.visualillusionsent.mysalary.Finance;
 import net.visualillusionsent.mysalary.MySalary;
 import net.visualillusionsent.mysalary.MySalaryConfiguration;
-import net.visualillusionsent.utils.UtilityException;
+import net.visualillusionsent.utils.JarUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 
-/**
- * MySalary main Canary Plugin class
- *
- * @author Jason (darkdiplomat)
- */
-public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalary {
+/** @author Jason (darkdiplomat) */
+public class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalary {
     private MySalaryConfiguration myscfg;
     private Finance finance;
+    private Permission permission = null;
 
     @Override
-    public boolean enable() {
+    public void onEnable() {
+        initialize();
         checkVersion();
         checkStatus();
         try {
             myscfg = new MySalaryConfiguration(this);
         }
         catch (IOException ioex) {
-            getLogman().logSevere(ioex.getMessage());
-            return false;
+            throw new RuntimeException(ioex);
         }
-        catch (UtilityException uex) {
-            getLogman().logStacktrace(uex.getMessage(), uex);
-        }
+
         finance = new Finance(this);
-        try {
-            new CanarySalaryCommandListener(this);
-        }
-        catch (CommandDependencyException cdex) {
-            getLogman().logStacktrace("Failed to register commands...", cdex);
-            return false;
-        }
-        return true;
+        permission = getServer().getServicesManager().getRegistration(Permission.class).getProvider();
+        new BukkitSalaryCommandExecutor(this);
     }
 
     @Override
-    public void disable() {
-        finance.close();
+    public void onDisable() {
+        if (finance != null) {
+            finance.close();
+        }
     }
 
     @Override
@@ -77,29 +67,31 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     @Override
     public void broadcastPayDay() {
         if (myscfg.isRequireClaimEnabled()) {
-            Canary.getServer().broadcastMessage("[§AMySalary§F]§2 PAYDAY!§6 CHECKS ARE READY FOR PICKUP!");
+            Bukkit.getServer().broadcastMessage("[§AMySalary§F]§2 PAYDAY!§6 CHECKS ARE READY FOR PICKUP!");
         }
         else {
-            Canary.getServer().broadcastMessage("[§AMySalary§F]§2 PAYDAY!§6 CHECKS ARE BEING DEPOSITED!");
+            Bukkit.getServer().broadcastMessage("[§AMySalary§F]§2 PAYDAY!§6 CHECKS ARE BEING DEPOSITED!");
         }
-        getLogman().logInfo("Players paid!");
+        getLogger().info("Players paid!");
     }
 
     @Override
     public void messageUser(String user_name, String message) {
-        Player player = Canary.getServer().getPlayer(user_name);
+        Player player = Bukkit.getServer().getPlayer(user_name);
         if (player != null) {
-            player.message(message);
+            player.sendMessage(message);
         }
     }
 
     @Override
     public String getGroupNameForUser(String user_name) {
-        OfflinePlayer offplayer = Canary.getServer().getOfflinePlayer(user_name);
-        if (offplayer != null) {
-            return offplayer.getGroup().getName();
+        try {
+            return permission.getPrimaryGroup((String) null, user_name);
         }
-        return null;
+        catch (UnsupportedOperationException uoex) {
+            // If a permission system without groups is used, default to either ops or default grouping
+            return Bukkit.getServer().getOfflinePlayer(user_name).isOp() ? "ops" : "default";
+        }
     }
 
     @Override
@@ -132,6 +124,11 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
 
     @Override
     public ModType getModType() {
-        return ModType.CANARY;
+        return ModType.BUKKIT;
+    }
+
+    @Override
+    public String getJarPath() {
+        return JarUtils.getJarPath(BukkitSalary.class);
     }
 }
