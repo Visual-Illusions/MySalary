@@ -19,9 +19,9 @@ package net.visualillusionsent.mysalary;
 
 import net.visualillusionsent.dconomy.accounting.wallet.Wallet;
 import net.visualillusionsent.dconomy.accounting.wallet.WalletHandler;
-import net.visualillusionsent.dconomy.accounting.wallet.WalletTransaction;
+import net.visualillusionsent.dconomy.api.dConomyUser;
+import net.visualillusionsent.dconomy.api.wallet.WalletTransaction;
 import net.visualillusionsent.dconomy.dCoBase;
-import net.visualillusionsent.dconomy.modinterface.ModUser;
 import net.visualillusionsent.utils.DateUtils;
 import net.visualillusionsent.utils.PropertiesFile;
 
@@ -29,7 +29,7 @@ import java.text.MessageFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static net.visualillusionsent.dconomy.accounting.wallet.WalletTransaction.ActionType.PLUGIN_DEPOSIT;
+import static net.visualillusionsent.dconomy.api.wallet.WalletTransaction.ActionType.PLUGIN_DEPOSIT;
 
 /**
  * Finance Department
@@ -98,7 +98,7 @@ public final class Finance {
                     return;
             }
             WalletHandler.getWalletByName("SERVER").deposit(serv_pay);
-            dCoBase.getServer().newTransaction(new WalletTransaction(mys, (ModUser) dCoBase.getServer(), PLUGIN_DEPOSIT, serv_pay));
+            dCoBase.getServer().newTransaction(new WalletTransaction(mys, (dConomyUser) dCoBase.getServer(), PLUGIN_DEPOSIT, serv_pay));
         }
     }
 

@@ -21,7 +21,6 @@ import net.canarymod.Canary;
 import net.canarymod.api.OfflinePlayer;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.commandsys.CommandDependencyException;
-import net.visualillusionsent.dconomy.modinterface.ModType;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
 import net.visualillusionsent.mysalary.Finance;
 import net.visualillusionsent.mysalary.MySalary;
@@ -128,10 +127,5 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     @Override
     public String getUserLocale() {
         return null;
-    }
-
-    @Override
-    public ModType getModType() {
-        return ModType.CANARY;
     }
 }

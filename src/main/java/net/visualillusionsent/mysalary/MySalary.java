@@ -17,14 +17,14 @@
  */
 package net.visualillusionsent.mysalary;
 
-import net.visualillusionsent.dconomy.modinterface.ModUser;
+import net.visualillusionsent.dconomy.api.dConomyUser;
 
 /**
  * MySalary interface
  *
  * @author Jason (darkdiplomat)
  */
-public interface MySalary extends ModUser {
+public interface MySalary extends dConomyUser {
 
     String getJarPath();
 

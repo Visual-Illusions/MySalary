@@ -18,7 +18,6 @@
 package net.visualillusionsent.mysalary.bukkit;
 
 import net.milkbowl.vault.permission.Permission;
-import net.visualillusionsent.dconomy.modinterface.ModType;
 import net.visualillusionsent.minecraft.plugin.bukkit.VisualIllusionsBukkitPlugin;
 import net.visualillusionsent.mysalary.Finance;
 import net.visualillusionsent.mysalary.MySalary;
@@ -120,11 +119,6 @@ public class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalar
     @Override
     public String getUserLocale() {
         return null;
-    }
-
-    @Override
-    public ModType getModType() {
-        return ModType.BUKKIT;
     }
 
     @Override
