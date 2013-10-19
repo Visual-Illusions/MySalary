@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /** @author Jason (darkdiplomat) */
 public class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalary {
@@ -36,9 +37,8 @@ public class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalar
 
     @Override
     public void onEnable() {
-        initialize();
-        checkVersion();
-        checkStatus();
+        super.onEnable();
+
         try {
             myscfg = new MySalaryConfiguration(this);
         }
@@ -99,11 +99,11 @@ public class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalar
     }
 
     @Override
-    public final void error(String s, Object... objects) {
+    public void error(String message) {
     }
 
     @Override
-    public void message(String s, Object... objects) {
+    public void message(String message) {
     }
 
     @Override
@@ -112,17 +112,17 @@ public class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalar
     }
 
     @Override
-    public boolean isConsole() {
-        return false;
-    }
-
-    @Override
     public String getUserLocale() {
-        return null;
+        return "en_US";
     }
 
     @Override
     public String getJarPath() {
         return JarUtils.getJarPath(BukkitSalary.class);
+    }
+
+    @Override
+    public Logger getPluginLogger() {
+        return getLogger();
     }
 }

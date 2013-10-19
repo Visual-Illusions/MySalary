@@ -112,6 +112,7 @@ public final class Finance {
             period = _reset.getLong("timer.reset") - System.currentTimeMillis();
             if (period <= 0) {
                 period = 60000; //reset to at least a minute so the server has time to get going
+                _reset.setLong("timer.reset", System.currentTimeMillis() + 60000);
             }
         }
         else {

@@ -21,6 +21,7 @@ import net.canarymod.Canary;
 import net.canarymod.api.OfflinePlayer;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.commandsys.CommandDependencyException;
+import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
 import net.visualillusionsent.mysalary.Finance;
 import net.visualillusionsent.mysalary.MySalary;
@@ -28,6 +29,7 @@ import net.visualillusionsent.mysalary.MySalaryConfiguration;
 import net.visualillusionsent.utils.UtilityException;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * MySalary main Canary Plugin class
@@ -40,8 +42,8 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
 
     @Override
     public boolean enable() {
-        checkVersion();
-        checkStatus();
+        super.enable();
+
         try {
             myscfg = new MySalaryConfiguration(this);
         }
@@ -65,7 +67,9 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
 
     @Override
     public void disable() {
-        finance.close();
+        if (finance != null) {
+            finance.close();
+        }
     }
 
     @Override
@@ -107,11 +111,13 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     }
 
     @Override
-    public final void error(String s, Object... objects) {
+    public void error(String message) {
+        getLogman().warning(message);
     }
 
     @Override
-    public void message(String s, Object... objects) {
+    public void message(String message) {
+        getLogman().info(message);
     }
 
     @Override
@@ -120,12 +126,12 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     }
 
     @Override
-    public boolean isConsole() {
-        return false;
+    public String getUserLocale() {
+        return dCoBase.getServerLocale();
     }
 
     @Override
-    public String getUserLocale() {
-        return null;
+    public Logger getPluginLogger() {
+        return getLogman();
     }
 }

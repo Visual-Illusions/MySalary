@@ -11,7 +11,7 @@
         <build.number>0-dev</build.number>
         <canary.main.class>${project.groupId}.${project.artifactId}.canary.CanarySalary</canary.main.class>
         <bukkit.main.class>${project.groupId}.${project.artifactId}.bukkit.BukkitSalary</bukkit.main.class>
-        <vimcplugin.version>1.0u1</vimcplugin.version>
+        <vimcplugin.version>1.1u1</vimcplugin.version>
         <dCo.version>3.0</dCo.version>
         <build.number>0-dev</build.number>
         <version.check.url>http://visualillusionsent.net/minecraft/plugins/</version.check.url>
@@ -275,10 +275,16 @@
                                 <filter>
                                     <artifact>net.visualillusionsent:vimcplugin</artifact>
                                     <includes>
-                                        <include>net/visualillusionsent/minecraft/plugin/canary/**</include>
-                                        <include>net/visualillusionsent/minecraft/plugin/bukkit/**</include>
+                                        <!-- Always include the license stuff -->
+                                        <include>META-INF/license/**</include>
+                                        <!-- Always include base VIMCPlugin stuff -->
+                                        <include>net/visualillusionsent/minecraft/plugin/**</include>
                                     </includes>
                                     <excludes>
+                                        <!-- Don't Exclude Bukkit/Canary
+                                        <exclude>net/visualillusionsent/minecraft/plugin/canary/**</exclude>
+                                        <exclude>net/visualillusionsent/minecraft/plugin/bukkit/**</exclude>
+                                        -->
                                         <!-- Spout is unused at this time -->
                                         <exclude>net/visualillusionsent/minecraft/plugin/spout/**</exclude>
                                     </excludes>
@@ -286,6 +292,11 @@
                             </filters>
                             <!-- Relocate the classes to appropriate packages -->
                             <relocations>
+                                <!-- Relocate base VIMCPlugin stuff to base of plugin -->
+                                <relocation>
+                                    <pattern>net.visualillusionsent.minecraft.plugin</pattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
+                                </relocation>
                                 <!-- Canary -->
                                 <relocation>
                                     <pattern>net.visualillusionsent.minecraft.plugin.canary</pattern>
