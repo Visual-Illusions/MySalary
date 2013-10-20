@@ -34,7 +34,7 @@
  */
 package net.visualillusionsent.mysalary;
 
-import net.visualillusionsent.dconomy.api.MineChatForm;
+import net.visualillusionsent.dconomy.ChatFormat;
 import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.utils.FileUtils;
 import net.visualillusionsent.utils.JarUtils;
@@ -74,15 +74,11 @@ public final class MessageTranslator extends LocaleHelper {
     }
 
     public final String translate(String key, String locale, Object... args) {
-        String toRet = args != null ? colorForm(localeTranslate(key, locale, args)) : colorForm(localeTranslate(key, locale));
+        String toRet = ChatFormat.formatString(localeTranslate(key, locale, args), "$c");
         if (toRet.contains("$m")) {
             toRet = toRet.replace("$m", dCoBase.getProperties().getString("money.name"));
         }
         return toRet;
-    }
-
-    private String colorForm(String msg) {
-        return msg.replace("$c", MineChatForm.MARKER.stringValue());
     }
 
     private static void moveLang(String locale) {
