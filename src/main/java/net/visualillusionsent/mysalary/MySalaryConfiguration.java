@@ -17,6 +17,7 @@
  */
 package net.visualillusionsent.mysalary;
 
+import net.visualillusionsent.minecraft.plugin.PluginInitializationException;
 import net.visualillusionsent.utils.BooleanUtils;
 import net.visualillusionsent.utils.FileUtils;
 import net.visualillusionsent.utils.JarUtils;
@@ -44,13 +45,13 @@ public final class MySalaryConfiguration {
         if (!cfg.exists()) {
             File directory = new File("config/MySalary");
             if (!directory.exists() && !directory.mkdirs()) {
-                throw new MySalaryInitializationException("Failed to create directories for MySalary setting.cfg");
+                throw new PluginInitializationException("Failed to create directories for MySalary setting.cfg");
             }
             try {
                 FileUtils.cloneFileFromJar(JarUtils.getJarPath(MySalaryConfiguration.class), "resources/default_config.cfg", "config/MySalary/settings.cfg");
             }
             catch (UtilityException uex) {
-                throw new MySalaryInitializationException("Failed to get properties...", uex);
+                throw new PluginInitializationException("Failed to get properties...", uex);
             }
         }
         myscfg = new PropertiesFile("config/MySalary/settings.cfg");

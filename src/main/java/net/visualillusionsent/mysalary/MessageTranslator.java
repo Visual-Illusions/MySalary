@@ -15,27 +15,11 @@
  * You should have received a copy of the GNU General Public License along with MySalary.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
-/*
- * This file is part of dBankLite.
- *
- * Copyright © 2013 Visual Illusions Entertainment
- *
- * dBankLite is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License,
- * or (at your option) any later version.
- *
- * dBankLite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with dBankLite.
- * If not, see http://www.gnu.org/licenses/gpl.html.
- */
 package net.visualillusionsent.mysalary;
 
 import net.visualillusionsent.dconomy.ChatFormat;
 import net.visualillusionsent.dconomy.dCoBase;
+import net.visualillusionsent.minecraft.plugin.PluginInitializationException;
 import net.visualillusionsent.utils.FileUtils;
 import net.visualillusionsent.utils.JarUtils;
 import net.visualillusionsent.utils.LocaleHelper;
@@ -65,7 +49,7 @@ public final class MessageTranslator extends LocaleHelper {
             }
         }
         catch (Exception ex) {
-            throw new MySalaryInitializationException("Failed to verify and move lang files", ex);
+            throw new PluginInitializationException("Failed to verify and move lang files", ex);
         }
     }
 

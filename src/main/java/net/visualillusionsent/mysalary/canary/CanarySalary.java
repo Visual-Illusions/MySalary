@@ -20,11 +20,9 @@ package net.visualillusionsent.mysalary.canary;
 import net.canarymod.Canary;
 import net.canarymod.api.OfflinePlayer;
 import net.canarymod.api.entity.living.humanoid.Player;
-import net.canarymod.commandsys.CommandDependencyException;
 import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
 import net.visualillusionsent.mysalary.MySalary;
-import net.visualillusionsent.mysalary.MySalaryInitializationException;
 import net.visualillusionsent.mysalary.Router;
 
 import java.util.logging.Level;
@@ -43,21 +41,20 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
 
         try {
             new Router(this);
-        }
-        catch (MySalaryInitializationException msiex) {
-            getLogman().log(Level.SEVERE, msiex.getMessage(), msiex.getCause());
-            return false;
-        }
-
-        try {
             new CanarySalaryCommandListener(this);
+            new CanarySalaryMOTD(this);
+            return true;
         }
-        catch (CommandDependencyException cdex) {
-            getLogman().logStacktrace("Failed to register commands...", cdex);
-            return false;
+        catch (Exception ex) {
+            String reason = ex.getMessage() != null ? ex.getMessage() : ex.getClass().getSimpleName();
+            if (debug) { // Only stack trace if debugging
+                getLogman().log(Level.SEVERE, "MySalary failed to start. Reason: ".concat(reason), ex);
+            }
+            else {
+                getLogman().severe("MySalary failed to start. Reason: ".concat(reason));
+            }
         }
-
-        return true;
+        return false;
     }
 
     @Override

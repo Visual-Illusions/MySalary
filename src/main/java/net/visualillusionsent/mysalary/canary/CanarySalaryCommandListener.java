@@ -30,7 +30,6 @@ import net.visualillusionsent.minecraft.plugin.ModMessageReceiver;
 import net.visualillusionsent.minecraft.plugin.canary.CanaryMessageReceiver;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPluginInformationCommand;
 import net.visualillusionsent.mysalary.Router;
-import net.visualillusionsent.utils.VersionChecker;
 
 /**
  * Canary MySalary Command Listener
@@ -49,27 +48,7 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
             permissions = { "mysalary.getpaid" },
             toolTip = "/mysalary [subcommand]")
     public final void information(MessageReceiver msgrec, String[] args) {
-        // Have to keep the old way of doing this since i need more information from the user than passed with messageInject
-        for (String msg : about) {
-            if (msg.equals("$VERSION_CHECK$")) {
-                VersionChecker vc = plugin.getVersionChecker();
-                Boolean isLatest = vc.isLatest();
-                if (isLatest == null) {
-                    msgrec.message(center(Colors.GRAY + "VersionCheckerError: " + vc.getErrorMessage()));
-                }
-                else if (!isLatest) {
-                    msgrec.message(center(Colors.GRAY + vc.getUpdateAvailibleMessage()));
-                }
-                else {
-                    msgrec.message(center(Colors.LIGHT_GREEN + "Latest Version Installed"));
-                }
-
-
-            }
-            else {
-                msgrec.message(msg);
-            }
-        }
+        super.sendInformation(msgrec);
     }
 
     @Override

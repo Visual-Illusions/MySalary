@@ -24,6 +24,8 @@ import net.canarymod.motd.MOTDKey;
 import net.canarymod.motd.MessageOfTheDayListener;
 import net.visualillusionsent.mysalary.Router;
 
+import java.text.MessageFormat;
+
 /**
  * Canary Message Of The Day Listener
  *
@@ -51,6 +53,6 @@ public class CanarySalaryMOTD implements MessageOfTheDayListener {
         else if (msgrec instanceof Player || Router.getCfg().payServer()) {
             salary = Router.getCfg().getDefaultPayAmount();
         }
-        return String.valueOf(salary);
+        return MessageFormat.format("{0,number,0.00}", salary);
     }
 }
