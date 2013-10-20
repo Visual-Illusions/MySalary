@@ -17,18 +17,24 @@
  */
 package net.visualillusionsent.mysalary;
 
-import net.visualillusionsent.dconomy.api.dConomyAddOn;
-
 /**
- * MySalary interface
  *
- * @author Jason (darkdiplomat)
  */
-public interface MySalary extends dConomyAddOn {
+public class MySalaryInitializationException extends RuntimeException {
 
-    void broadcastPayDay();
+    public MySalaryInitializationException() {
+        super();
+    }
 
-    void messageUser(String user_name, String message_key, Object... args);
+    public MySalaryInitializationException(String message) {
+        super(message);
+    }
 
-    String getGroupNameForUser(String user_name);
+    public MySalaryInitializationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public MySalaryInitializationException(Throwable cause) {
+        super(cause);
+    }
 }

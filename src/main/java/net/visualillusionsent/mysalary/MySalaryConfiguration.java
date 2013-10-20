@@ -19,10 +19,11 @@ package net.visualillusionsent.mysalary;
 
 import net.visualillusionsent.utils.BooleanUtils;
 import net.visualillusionsent.utils.FileUtils;
+import net.visualillusionsent.utils.JarUtils;
 import net.visualillusionsent.utils.PropertiesFile;
+import net.visualillusionsent.utils.UtilityException;
 
 import java.io.File;
-import java.io.IOException;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 
@@ -34,19 +35,25 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public final class MySalaryConfiguration {
     private PropertiesFile myscfg;
 
-    public MySalaryConfiguration(MySalary mys) throws IOException {
+    public MySalaryConfiguration(MySalary mys) {
         loadCfg(mys);
     }
 
-    private final void loadCfg(MySalary mys) throws IOException {
-        File cfg = new File("config/MySalary/MySalary.cfg");
+    private final void loadCfg(MySalary mys) {
+        File cfg = new File("config/MySalary/settings.cfg");
         if (!cfg.exists()) {
-            if (!new File("config/MySalary/").mkdirs()) {
-                throw new IOException("Failed to create directories for MySalary.cfg");
+            File directory = new File("config/MySalary");
+            if (!directory.exists() && !directory.mkdirs()) {
+                throw new MySalaryInitializationException("Failed to create directories for MySalary setting.cfg");
             }
-            FileUtils.cloneFileFromJar(mys.getJarPath(), "default_config.cfg", "config/MySalary/MySalary.cfg");
+            try {
+                FileUtils.cloneFileFromJar(JarUtils.getJarPath(MySalaryConfiguration.class), "resources/default_config.cfg", "config/MySalary/settings.cfg");
+            }
+            catch (UtilityException uex) {
+                throw new MySalaryInitializationException("Failed to get properties...", uex);
+            }
         }
-        myscfg = new PropertiesFile("config/MySalary/MySalary.cfg");
+        myscfg = new PropertiesFile("config/MySalary/settings.cfg");
 
         myscfg.getLong("delay", 120);
         myscfg.getDouble("pay.amount", 5.95);

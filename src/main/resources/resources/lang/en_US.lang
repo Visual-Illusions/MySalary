@@ -1,0 +1,28 @@
+;# {name} - English (US) Language File
+;# This file NEEDS to be in UTF-8 format!
+;# This file is also the default Language file and needs to be included
+;# DO NOT MODIFY THIS FILE! clone the file to create new translations.
+;# Saving the new file as <localeCode>.lang
+no.salary=You do not have a salary.
+user.salary=$cAYour salary is$c6 {0,number,#.##} $m$cA.
+salary.received=$cAYou have received$c6 {0,number,#.##} $m$cA.
+no.check=You do not have any pending checks.
+auto.checks=Checks are auto-deposited. Claiming is not required.
+prop.set={0} is now set to {1}
+#;
+#; This file is part of {name}.
+#;
+#; Copyright © {copyright.years} Visual Illusions Entertainment.
+#;
+#; {name} is free software: you can redistribute it and/or modify
+#; it under the terms of the GNU General Public License as published by
+#; the Free Software Foundation, either version 3 of the License, or
+#; (at your option) any later version.
+#;
+#; {name} is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#; See the GNU General Public License for more details.
+#;
+#; You should have received a copy of the GNU General Public License along with {name}.
+#; If not, see http://www.gnu.org/licenses/gpl.html
+#;

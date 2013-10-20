@@ -19,17 +19,15 @@ package net.visualillusionsent.mysalary;
 
 import net.visualillusionsent.dconomy.accounting.wallet.Wallet;
 import net.visualillusionsent.dconomy.accounting.wallet.WalletHandler;
-import net.visualillusionsent.dconomy.api.dConomyUser;
-import net.visualillusionsent.dconomy.api.wallet.WalletTransaction;
+import net.visualillusionsent.dconomy.api.account.wallet.WalletTransaction;
 import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.utils.DateUtils;
 import net.visualillusionsent.utils.PropertiesFile;
 
-import java.text.MessageFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static net.visualillusionsent.dconomy.api.wallet.WalletTransaction.ActionType.PLUGIN_DEPOSIT;
+import static net.visualillusionsent.dconomy.api.account.wallet.WalletAction.PLUGIN_DEPOSIT;
 
 /**
  * Finance Department
@@ -53,25 +51,25 @@ public final class Finance {
         mys.broadcastPayDay();
         for (Wallet wallet : WalletHandler.getWallets().values()) {
             // check wallet lock status
-            if (wallet.isLocked() && !mys.getCfg().payIfLocked())
+            if (wallet.isLocked() && !Router.getCfg().payIfLocked())
                 continue;
-            double pay = mys.getCfg().getDefaultPayAmount();
+            double pay = Router.getCfg().getDefaultPayAmount();
             // check if group amount is needed
-            if (mys.getCfg().isGroupSpecificEnabled()) {
+            if (Router.getCfg().isGroupSpecificEnabled()) {
                 String group = mys.getGroupNameForUser(wallet.getOwner());
                 // if no group, ignore wallet and continue
                 if (group == null)
                     continue;
-                pay = mys.getCfg().getGroupPay(group);
+                pay = Router.getCfg().getGroupPay(group);
                 // if group doesn't have an amount, ignore it and continue
                 if (pay <= 0)
                     continue;
             }
 
             // Check if player's are required to claim their pay
-            if (mys.getCfg().isRequireClaimEnabled()) {
+            if (Router.getCfg().isRequireClaimEnabled()) {
                 // Check if checks can be accumulated
-                if (mys.getCfg().isAccumulateChecksEnabled()) {
+                if (Router.getCfg().isAccumulateChecksEnabled()) {
                     // if an owner has a pending check, add to it
                     if (_pending.containsKey(wallet.getOwner())) {
                         _pending.setDouble(wallet.getOwner(), _pending.getDouble(wallet.getOwner()) + pay);
@@ -87,18 +85,18 @@ public final class Finance {
             else {
                 wallet.deposit(pay);
                 dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer().getUser(wallet.getOwner()), PLUGIN_DEPOSIT, pay));
-                mys.messageUser(wallet.getOwner(), MessageFormat.format("\u00A7AYou have received\u00A76 {0,number,#.##} {1}", pay, dCoBase.getProperties().getString("money.name")));
+                mys.messageUser(wallet.getOwner(), "salary.received", pay, dCoBase.getProperties().getString("money.name"));
             }
         }
-        if (mys.getCfg().payServer()) {
-            double serv_pay = mys.getCfg().getDefaultPayAmount();
-            if (mys.getCfg().isGroupSpecificEnabled()) {
-                serv_pay = mys.getCfg().getGroupPay("SERVER");
+        if (Router.getCfg().payServer()) {
+            double serv_pay = Router.getCfg().getDefaultPayAmount();
+            if (Router.getCfg().isGroupSpecificEnabled()) {
+                serv_pay = Router.getCfg().getGroupPay("SERVER");
                 if (serv_pay <= 0)
                     return;
             }
             WalletHandler.getWalletByName("SERVER").deposit(serv_pay);
-            dCoBase.getServer().newTransaction(new WalletTransaction(mys, (dConomyUser) dCoBase.getServer(), PLUGIN_DEPOSIT, serv_pay));
+            dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer(), PLUGIN_DEPOSIT, serv_pay));
         }
     }
 
@@ -107,7 +105,7 @@ public final class Finance {
             timer.cancel();
         }
         timer = new Timer();
-        long period = mys.getCfg().getDelay();
+        long period = Router.getCfg().getDelay();
         if (_reset.getLong("timer.reset") > -1 && booting) {
             period = _reset.getLong("timer.reset") - System.currentTimeMillis();
             if (period <= 0) {
@@ -116,9 +114,9 @@ public final class Finance {
             }
         }
         else {
-            _reset.setLong("timer.reset", System.currentTimeMillis() + mys.getCfg().getDelay());
+            _reset.setLong("timer.reset", System.currentTimeMillis() + Router.getCfg().getDelay());
         }
-        timer.schedule(new SalaryTask(), period, mys.getCfg().getDelay());
+        timer.schedule(new SalaryTask(), period, Router.getCfg().getDelay());
     }
 
     public final double checkPendingAndPay(String user_name) {
@@ -147,7 +145,7 @@ public final class Finance {
         @Override
         public void run() {
             payout();
-            _reset.setLong("timer.reset", System.currentTimeMillis() + mys.getCfg().getDelay());
+            _reset.setLong("timer.reset", System.currentTimeMillis() + Router.getCfg().getDelay());
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿# {name} - Bukkit Plugin configuration file
-# Copyright © {copyright.years} Visual Illusions Entertainment
+
 name: {name}
 main: {bukkit.main.class}
 version: {plugin.version}
@@ -12,7 +12,7 @@ developers: {devs}
 build.number: {build}
 build.time: {build.time}
 program.status: {program.status}
-version.check.url: {version.check.url}
+check.url: {version.check.url}
 issues.url: {issues}
 copyright.years: {copyright.years}
 # # #
@@ -52,3 +52,21 @@ permissions:
   mysalary.admin:
     description: Grants access to everything MySalary
     default: op
+
+#
+#  This file is part of {name}.
+#
+#  Copyright © {copyright.years} Visual Illusions Entertainment.
+#
+#  {name} is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  {name} is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License along with {name}.
+#  If not, see http://www.gnu.org/licenses/gpl.html
+#

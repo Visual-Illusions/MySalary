@@ -23,20 +23,21 @@ import net.canarymod.chat.Colors;
 import net.canarymod.chat.MessageReceiver;
 import net.canarymod.commandsys.Command;
 import net.canarymod.commandsys.CommandDependencyException;
+import net.visualillusionsent.dconomy.api.dConomyUser;
+import net.visualillusionsent.dconomy.canary.api.Canary_User;
 import net.visualillusionsent.dconomy.dCoBase;
+import net.visualillusionsent.minecraft.plugin.ModMessageReceiver;
+import net.visualillusionsent.minecraft.plugin.canary.CanaryMessageReceiver;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPluginInformationCommand;
+import net.visualillusionsent.mysalary.Router;
 import net.visualillusionsent.utils.VersionChecker;
-
-import java.text.MessageFormat;
 
 /**
  * Canary MySalary Command Listener
  *
  * @author Jason (darkdiplomat)
  */
-public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInformationCommand {
-    private static final String salary_msg = Colors.LIGHT_GREEN + "Your salary is " + Colors.ORANGE + " {0,number,#.##} " + dCoBase.getProperties().getString("money.name"),
-            salary_pay = Colors.LIGHT_GREEN + "You have received " + Colors.ORANGE + " {0,number,#.##} " + dCoBase.getProperties().getString("money.name");
+public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInformationCommand {
 
     public CanarySalaryCommandListener(CanarySalary plugin) throws CommandDependencyException {
         super(plugin);
@@ -48,6 +49,7 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
             permissions = { "mysalary.getpaid" },
             toolTip = "/mysalary [subcommand]")
     public final void information(MessageReceiver msgrec, String[] args) {
+        // Have to keep the old way of doing this since i need more information from the user than passed with messageInject
         for (String msg : about) {
             if (msg.equals("$VERSION_CHECK$")) {
                 VersionChecker vc = plugin.getVersionChecker();
@@ -62,31 +64,40 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
                     msgrec.message(center(Colors.LIGHT_GREEN + "Latest Version Installed"));
                 }
 
-                //Inject MySalary messages
-                msgrec.message(Colors.LIGHT_GREEN + "Next PayCheck in: " + Colors.ORANGE + getCS().getFinance().getTimeUntil());
-                if (getCS().getCfg().isGroupSpecificEnabled()) {
-                    if (msgrec instanceof Player) {
-                        double salary = getCS().getCfg().getGroupPay(((Player) msgrec).getGroup().getName());
-                        if (salary > 0) {
-                            msgrec.message(MessageFormat.format(salary_msg, salary));
-                        }
-                        else {
-                            msgrec.notice("You do not have a salary.");
-                        }
-                    }
-                    else {
-                        if (getCS().getCfg().payServer()) {
-                            msgrec.message(MessageFormat.format(salary_msg, getCS().getCfg().getGroupPay("SERVER")));
-                        }
-                    }
-                }
-                else {
-                    msgrec.message(MessageFormat.format(salary_msg, getCS().getCfg().getDefaultPayAmount()));
-                }
+
             }
             else {
                 msgrec.message(msg);
             }
+        }
+    }
+
+    @Override
+    protected final void messageInject(ModMessageReceiver receiver) {
+        MessageReceiver msgrec = ((CanaryMessageReceiver) receiver).unwrap();
+        receiver.message(Colors.LIGHT_GREEN + "Next PayCheck in: " + Colors.ORANGE + Router.getFinance().getTimeUntil());
+        if (Router.getCfg().isGroupSpecificEnabled()) {
+            if (msgrec instanceof Player) {
+                double salary = Router.getCfg().getGroupPay(getPlugin().getGroupNameForUser(msgrec.getName()));
+                if (salary > 0) {
+                    msgrec.message(Router.getTranslator().translate("user.salary", asUser(msgrec).getUserLocale(), salary));
+                }
+                else {
+                    msgrec.notice(Router.getTranslator().translate("no.salary", asUser(msgrec).getUserLocale()));
+                }
+            }
+            else if (Router.getCfg().payServer()) {
+                msgrec.message(Router.getTranslator().translate("user.salary", asUser(msgrec).getUserLocale(), Router.getCfg().getGroupPay("SERVER")));
+            }
+            else {
+                msgrec.notice(Router.getTranslator().translate("no.salary", asUser(msgrec).getUserLocale()));
+            }
+        }
+        else if (msgrec instanceof Player || Router.getCfg().payServer()) {
+            msgrec.message(Router.getTranslator().translate("user.salary", asUser(msgrec).getUserLocale(), Router.getCfg().getDefaultPayAmount()));
+        }
+        else {
+            msgrec.notice(Router.getTranslator().translate("no.salary", asUser(msgrec).getUserLocale()));
         }
     }
 
@@ -96,17 +107,17 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
             parent = "mysalary",
             toolTip = "/mysalary claim")
     public final void claimcheck(MessageReceiver msgrec, String[] args) {
-        if (getCS().getCfg().isRequireClaimEnabled()) {
-            double result = getCS().getFinance().checkPendingAndPay(msgrec.getName());
+        if (Router.getCfg().isRequireClaimEnabled()) {
+            double result = Router.getFinance().checkPendingAndPay(msgrec.getName());
             if (result > 0) {
-                msgrec.message(MessageFormat.format(salary_pay, result));
+                msgrec.message(Router.getTranslator().translate("salary.received", asUser(msgrec).getUserLocale(), result));
             }
             else {
-                msgrec.notice("You do not have any pending checks.");
+                msgrec.notice(Router.getTranslator().translate("no.check", asUser(msgrec).getUserLocale()));
             }
         }
         else {
-            msgrec.notice("Checks are auto-deposited. Claiming is not required.");
+            msgrec.notice(Router.getTranslator().translate("auto.checks", asUser(msgrec).getUserLocale()));
         }
     }
 
@@ -116,7 +127,7 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
             parent = "mysalary",
             toolTip = "/mysalary broadcast")
     public final void broadcast(MessageReceiver msgrec, String[] args) {
-        Canary.getServer().broadcastMessage("[§AMySalary§F]§A Next PayCheck in: " + Colors.ORANGE + getCS().getFinance().getTimeUntil());
+        Canary.getServer().broadcastMessage("[§AMySalary§F]§A Next PayCheck in: " + Colors.ORANGE + Router.getFinance().getTimeUntil());
     }
 
     @Command(aliases = { "forcepay" },
@@ -126,9 +137,9 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
             toolTip = "/mysalary forcepay [reset]")
     public final void forcepay(MessageReceiver msgrec, String[] args) {
         if (args.length == 2 && args[1].toLowerCase().equals("reset")) {
-            getCS().getFinance().reset(false);
+            Router.getFinance().reset(false);
         }
-        getCS().getFinance().payout();
+        Router.getFinance().payout();
     }
 
     @Command(aliases = { "setprop" },
@@ -136,19 +147,22 @@ public class CanarySalaryCommandListener extends VisualIllusionsCanaryPluginInfo
             permissions = { "mysalary.admin" },
             parent = "mysalary",
             toolTip = "/mysalary setprop <key> <value>",
-            min = 2
-    )
+            min = 2)
     public final void setProp(MessageReceiver msgrec, String[] args) {
         try {
-            getCS().getCfg().setProperty(args[1], args[2]);
-            msgrec.message(Colors.ORANGE + args[1] + Colors.LIGHT_GREEN + " is now set to " + Colors.YELLOW + args[2]);
+            Router.getCfg().setProperty(args[1], args[2]);
+            msgrec.message(Router.getTranslator().translate("prop.set", asUser(msgrec).getUserLocale(), args[1], args[2]));
         }
         catch (IllegalArgumentException iaex) {
             msgrec.notice(iaex.getMessage());
         }
     }
 
-    private final CanarySalary getCS() {
+    protected final CanarySalary getPlugin() {
         return (CanarySalary) plugin;
+    }
+
+    private dConomyUser asUser(MessageReceiver msgrec) {
+        return msgrec instanceof Player ? new Canary_User((Player) msgrec) : dCoBase.getServer();
     }
 }

@@ -23,12 +23,11 @@ import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.commandsys.CommandDependencyException;
 import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
-import net.visualillusionsent.mysalary.Finance;
 import net.visualillusionsent.mysalary.MySalary;
-import net.visualillusionsent.mysalary.MySalaryConfiguration;
-import net.visualillusionsent.utils.UtilityException;
+import net.visualillusionsent.mysalary.MySalaryInitializationException;
+import net.visualillusionsent.mysalary.Router;
 
-import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -37,24 +36,19 @@ import java.util.logging.Logger;
  * @author Jason (darkdiplomat)
  */
 public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalary {
-    private MySalaryConfiguration myscfg;
-    private Finance finance;
 
     @Override
     public boolean enable() {
         super.enable();
 
         try {
-            myscfg = new MySalaryConfiguration(this);
+            new Router(this);
         }
-        catch (IOException ioex) {
-            getLogman().logSevere(ioex.getMessage());
+        catch (MySalaryInitializationException msiex) {
+            getLogman().log(Level.SEVERE, msiex.getMessage(), msiex.getCause());
             return false;
         }
-        catch (UtilityException uex) {
-            getLogman().logStacktrace(uex.getMessage(), uex);
-        }
-        finance = new Finance(this);
+
         try {
             new CanarySalaryCommandListener(this);
         }
@@ -62,24 +56,18 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
             getLogman().logStacktrace("Failed to register commands...", cdex);
             return false;
         }
+
         return true;
     }
 
     @Override
     public void disable() {
-        if (finance != null) {
-            finance.close();
-        }
-    }
-
-    @Override
-    public final MySalaryConfiguration getCfg() {
-        return myscfg;
+        Router.closeConnection();
     }
 
     @Override
     public void broadcastPayDay() {
-        if (myscfg.isRequireClaimEnabled()) {
+        if (Router.getCfg().isRequireClaimEnabled()) {
             Canary.getServer().broadcastMessage("[§AMySalary§F]§2 PAYDAY!§6 CHECKS ARE READY FOR PICKUP!");
         }
         else {
@@ -89,10 +77,10 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     }
 
     @Override
-    public void messageUser(String user_name, String message) {
+    public void messageUser(String user_name, String message_key, Object... args) {
         Player player = Canary.getServer().getPlayer(user_name);
         if (player != null) {
-            player.message(message);
+            player.message(Router.getTranslator().translate(message_key, getUserLocale(), args));
         }
     }
 
@@ -103,11 +91,6 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
             return offplayer.getGroup().getName();
         }
         return null;
-    }
-
-    @Override
-    public final Finance getFinance() {
-        return finance;
     }
 
     @Override

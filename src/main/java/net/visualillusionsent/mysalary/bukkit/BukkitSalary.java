@@ -18,54 +18,49 @@
 package net.visualillusionsent.mysalary.bukkit;
 
 import net.milkbowl.vault.permission.Permission;
+import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.minecraft.plugin.bukkit.VisualIllusionsBukkitPlugin;
-import net.visualillusionsent.mysalary.Finance;
 import net.visualillusionsent.mysalary.MySalary;
-import net.visualillusionsent.mysalary.MySalaryConfiguration;
-import net.visualillusionsent.utils.JarUtils;
+import net.visualillusionsent.mysalary.Router;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** @author Jason (darkdiplomat) */
-public class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalary {
-    private MySalaryConfiguration myscfg;
-    private Finance finance;
+public final class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalary {
     private Permission permission = null;
 
     @Override
     public void onEnable() {
         super.onEnable();
-
         try {
-            myscfg = new MySalaryConfiguration(this);
+            new Router(this);
+            permission = getServer().getServicesManager().getRegistration(Permission.class).getProvider();
+            new BukkitSalaryCommandExecutor(this);
+            throw new Exception("Testing Failure and Debug");
         }
-        catch (IOException ioex) {
-            throw new RuntimeException(ioex);
+        catch (Exception ex) {
+            String reason = ex.getMessage() != null ? ex.getMessage() : ex.getClass().getSimpleName();
+            if (debug) { // Only stack trace if debugging
+                getLogger().log(Level.SEVERE, "MySalary failed to start. Reason: ".concat(reason), ex);
+            }
+            else {
+                getLogger().severe("MySalary failed to start. Reason: ".concat(reason));
+            }
+            die();
         }
-
-        finance = new Finance(this);
-        permission = getServer().getServicesManager().getRegistration(Permission.class).getProvider();
-        new BukkitSalaryCommandExecutor(this);
     }
 
     @Override
     public void onDisable() {
-        if (finance != null) {
-            finance.close();
-        }
-    }
-
-    @Override
-    public final MySalaryConfiguration getCfg() {
-        return myscfg;
+        Router.closeConnection();
     }
 
     @Override
     public void broadcastPayDay() {
-        if (myscfg.isRequireClaimEnabled()) {
+        if (Router.getCfg().isRequireClaimEnabled()) {
             Bukkit.getServer().broadcastMessage("[§AMySalary§F]§2 PAYDAY!§6 CHECKS ARE READY FOR PICKUP!");
         }
         else {
@@ -75,10 +70,10 @@ public class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalar
     }
 
     @Override
-    public void messageUser(String user_name, String message) {
+    public void messageUser(String user_name, String message_key, Object... args) {
         Player player = Bukkit.getServer().getPlayer(user_name);
         if (player != null) {
-            player.sendMessage(message);
+            player.sendMessage(Router.getTranslator().translate(message_key, getUserLocale(), args));
         }
     }
 
@@ -91,11 +86,6 @@ public class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalar
             // If a permission system without groups is used, default to either ops or default grouping
             return Bukkit.getServer().getOfflinePlayer(user_name).isOp() ? "ops" : "default";
         }
-    }
-
-    @Override
-    public final Finance getFinance() {
-        return finance;
     }
 
     @Override
@@ -113,12 +103,7 @@ public class BukkitSalary extends VisualIllusionsBukkitPlugin implements MySalar
 
     @Override
     public String getUserLocale() {
-        return "en_US";
-    }
-
-    @Override
-    public String getJarPath() {
-        return JarUtils.getJarPath(BukkitSalary.class);
+        return dCoBase.getServerLocale();
     }
 
     @Override

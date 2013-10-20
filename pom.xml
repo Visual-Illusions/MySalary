@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.visualillusionsent</groupId>
     <artifactId>mysalary</artifactId>
-    <version>2.0</version>
+    <version>2.0.0</version>
     <name>MySalary</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -11,8 +11,8 @@
         <build.number>0-dev</build.number>
         <canary.main.class>${project.groupId}.${project.artifactId}.canary.CanarySalary</canary.main.class>
         <bukkit.main.class>${project.groupId}.${project.artifactId}.bukkit.BukkitSalary</bukkit.main.class>
-        <vimcplugin.version>1.1u1</vimcplugin.version>
-        <dCo.version>3.0</dCo.version>
+        <vimcplugin.version>1.0.0-SNAPSHOT</vimcplugin.version>
+        <dCo.version>3.0.0</dCo.version>
         <build.number>0-dev</build.number>
         <version.check.url>http://visualillusionsent.net/minecraft/plugins/</version.check.url>
         <devs>darkdiplomat</devs>
@@ -130,6 +130,11 @@
                 </executions>
                 <configuration>
                     <includes>
+                        <!-- Other files -->
+                        <include>target/**/*.cfg</include>
+                        <include>target/**/*.txt</include>
+                        <include>target/**/*.lang</include>
+                        <include>target/**/*.readme</include>
                         <!-- CanaryMod -->
                         <include>target/**/*.inf</include>
                         <!-- Bukkit -->
@@ -149,7 +154,7 @@
                             <value>${project.issueManagement.url}</value>
                         </replacement>
                         <replace>
-                            <token>{version.check.url}</token>
+                            <token>{check.url}</token>
                             <value>${version.check.url}</value>
                         </replace>
                         <replace>
@@ -245,8 +250,9 @@
                     </mapping>
                     <properties>
                         <name>${project.name}</name>
-                        <copyright>Copyright © ${project.inceptionYear}-${current.year} Visual Illusions Entertainment
-                        </copyright>
+                        <years>${project.inceptionYear}-${current.year}</years>
+                        <gpl.type>GNU General Public License</gpl.type>
+                        <license.url>http://www.gnu.org/licenses/gpl.html</license.url>
                     </properties>
                     <includes>
                         <include>src/main/java/**</include>

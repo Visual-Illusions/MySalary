@@ -36,6 +36,7 @@ package net.visualillusionsent.mysalary.bukkit;
 
 import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.minecraft.plugin.bukkit.VisualIllusionsBukkitPluginInformationCommand;
+import net.visualillusionsent.mysalary.Router;
 import net.visualillusionsent.utils.VersionChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,17 +44,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.text.MessageFormat;
-
 /**
  * Command Executor for Bukkit
  *
  * @author Jason (darkdiplomat)
  */
-public class BukkitSalaryCommandExecutor extends VisualIllusionsBukkitPluginInformationCommand {
-    private static final String salary_msg = ChatColor.GREEN + "Your salary is " + ChatColor.GOLD + " {0,number,#.##} " + dCoBase.getProperties().getString("money.name"),
-            salary_pay = ChatColor.GREEN + "You have received " + ChatColor.GOLD + " {0,number,#.##} " + dCoBase.getProperties().getString("money.name");
-
+public final class BukkitSalaryCommandExecutor extends VisualIllusionsBukkitPluginInformationCommand {
     BukkitSalaryCommandExecutor(BukkitSalary bsalary) {
         super(bsalary);
         // Initialize Commands
@@ -79,25 +75,26 @@ public class BukkitSalaryCommandExecutor extends VisualIllusionsBukkitPluginInfo
                         }
 
                         //Inject MySalary messages
-                        sender.sendMessage(ChatColor.GREEN + "Next PayCheck in: " + ChatColor.GOLD + getBS().getFinance().getTimeUntil());
-                        if (getBS().getCfg().isGroupSpecificEnabled()) {
+                        sender.sendMessage(ChatColor.GREEN + "Next PayCheck in: " + ChatColor.GOLD + Router.getFinance().getTimeUntil());
+                        if (Router.getCfg().isGroupSpecificEnabled()) {
                             if (sender instanceof Player) {
-                                double salary = getBS().getCfg().getGroupPay(getBS().getGroupNameForUser(sender.getName()));
+                                double salary = Router.getCfg().getGroupPay(getPlugin().getGroupNameForUser(sender.getName()));
                                 if (salary > 0) {
-                                    sender.sendMessage(MessageFormat.format(salary_msg, salary));
+                                    sender.sendMessage(Router.getTranslator().translate("user.salary", dCoBase.getServerLocale(), salary));
                                 }
                                 else {
-                                    sender.sendMessage(ChatColor.RED.toString().concat("You do not have a salary."));
+                                    sender.sendMessage(ChatColor.RED.toString().concat(Router.getTranslator().translate("no.salary", dCoBase.getServerLocale())));
                                 }
                             }
-                            else if (getBS().getCfg().payServer()) {
-                                sender.sendMessage(MessageFormat.format(salary_msg, getBS().getCfg().getGroupPay("SERVER")));
+                            else if (Router.getCfg().payServer()) {
+                                sender.sendMessage(Router.getTranslator().translate("user.salary", dCoBase.getServerLocale(), Router.getCfg().getGroupPay("SERVER")));
                             }
                         }
+                        else if (sender instanceof Player || Router.getCfg().payServer()) {
+                            sender.sendMessage(Router.getTranslator().translate("user.salary", dCoBase.getServerLocale(), Router.getCfg().getDefaultPayAmount()));
+                        }
                         else {
-                            if (sender instanceof Player || getBS().getCfg().payServer()) {
-                                sender.sendMessage(MessageFormat.format(salary_msg, getBS().getCfg().getDefaultPayAmount()));
-                            }
+                            sender.sendMessage(ChatColor.RED.toString().concat(Router.getTranslator().translate("no.salary", dCoBase.getServerLocale())));
                         }
                     }
                     else {
@@ -107,41 +104,41 @@ public class BukkitSalaryCommandExecutor extends VisualIllusionsBukkitPluginInfo
                 return true;
             }
             else if (args[0].equals("claim")) {
-                if (getBS().getCfg().isRequireClaimEnabled()) {
-                    double result = getBS().getFinance().checkPendingAndPay(sender.getName());
+                if (Router.getCfg().isRequireClaimEnabled()) {
+                    double result = Router.getFinance().checkPendingAndPay(sender.getName());
                     if (result > 0) {
-                        sender.sendMessage(MessageFormat.format(salary_pay, result));
+                        sender.sendMessage(Router.getTranslator().translate("salary.received", dCoBase.getServerLocale(), result));
                     }
                     else {
-                        sender.sendMessage(ChatColor.RED.toString().concat("You do not have any pending checks."));
+                        sender.sendMessage(ChatColor.RED.toString().concat(Router.getTranslator().translate("no.check", dCoBase.getServerLocale())));
                     }
                 }
                 else {
-                    sender.sendMessage(ChatColor.RED.toString().concat("Checks are auto-deposited. Claiming is not required."));
+                    sender.sendMessage(ChatColor.RED.toString().concat(Router.getTranslator().translate("auto.checks", dCoBase.getServerLocale())));
                 }
                 return true;
             }
             else if (args[0].equals("broadcast") && sender.hasPermission("mysalary.admin")) {
-                Bukkit.getServer().broadcastMessage("[§AMySalary§F]§A Next PayCheck in: " + ChatColor.GOLD + getBS().getFinance().getTimeUntil());
+                Bukkit.getServer().broadcastMessage("[§AMySalary§F]§A Next PayCheck in: " + ChatColor.GOLD + Router.getFinance().getTimeUntil());
                 return true;
             }
             else if (args[0].equals("forcepay") && sender.hasPermission("mysalary.admin")) {
                 if (args.length == 2 && args[1].toLowerCase().equals("reset")) {
-                    getBS().getFinance().reset(false);
+                    Router.getFinance().reset(false);
                 }
-                getBS().getFinance().payout();
+                Router.getFinance().payout();
                 return true;
             }
             else if (args[0].equals("setprop") && sender.hasPermission("mysalary.admin") && args.length > 1) {
-                getBS().getCfg().setProperty(args[1], args[2]);
-                sender.sendMessage(ChatColor.GOLD + args[1] + ChatColor.GREEN + " is now set to " + ChatColor.YELLOW + args[2]);
+                Router.getCfg().setProperty(args[1], args[2]);
+                sender.sendMessage(Router.getTranslator().translate("prop.set", dCoBase.getServerLocale(), args[1], args[2]));
                 return true;
             }
         }
         return false;
     }
 
-    private final BukkitSalary getBS() {
+    protected final BukkitSalary getPlugin() {
         return (BukkitSalary) plugin;
     }
 }
