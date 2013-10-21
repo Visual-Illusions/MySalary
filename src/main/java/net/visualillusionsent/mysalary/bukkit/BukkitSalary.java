@@ -39,7 +39,6 @@ public final class BukkitSalary extends VisualIllusionsBukkitPlugin implements M
             new Router(this);
             permission = getServer().getServicesManager().getRegistration(Permission.class).getProvider();
             new BukkitSalaryCommandExecutor(this);
-            throw new Exception("Testing Failure and Debug");
         }
         catch (Exception ex) {
             String reason = ex.getMessage() != null ? ex.getMessage() : ex.getClass().getSimpleName();

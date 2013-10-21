@@ -17,7 +17,6 @@
  */
 package net.visualillusionsent.mysalary;
 
-import net.visualillusionsent.dconomy.ChatFormat;
 import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.minecraft.plugin.PluginInitializationException;
 import net.visualillusionsent.utils.FileUtils;
@@ -58,11 +57,7 @@ public final class MessageTranslator extends LocaleHelper {
     }
 
     public final String translate(String key, String locale, Object... args) {
-        String toRet = ChatFormat.formatString(localeTranslate(key, locale, args), "$c");
-        if (toRet.contains("$m")) {
-            toRet = toRet.replace("$m", dCoBase.getProperties().getString("money.name"));
-        }
-        return toRet;
+        return net.visualillusionsent.minecraft.plugin.ChatFormat.formatString(localeTranslate(key, locale, args), "$c").replace("$m", dCoBase.getMoneyName());
     }
 
     private static void moveLang(String locale) {
