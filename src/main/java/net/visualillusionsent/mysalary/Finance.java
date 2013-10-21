@@ -17,10 +17,9 @@
  */
 package net.visualillusionsent.mysalary;
 
+import net.visualillusionsent.dconomy.accounting.AccountNotFoundException;
 import net.visualillusionsent.dconomy.accounting.AccountingException;
-import net.visualillusionsent.dconomy.accounting.wallet.Wallet;
-import net.visualillusionsent.dconomy.accounting.wallet.WalletHandler;
-import net.visualillusionsent.dconomy.api.account.wallet.WalletTransaction;
+import net.visualillusionsent.dconomy.api.account.wallet.WalletAPIListener;
 import net.visualillusionsent.dconomy.api.dConomyUser;
 import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.utils.DateUtils;
@@ -28,8 +27,6 @@ import net.visualillusionsent.utils.PropertiesFile;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static net.visualillusionsent.dconomy.api.account.wallet.WalletAction.PLUGIN_DEPOSIT;
 
 /**
  * Finance Department
@@ -51,14 +48,19 @@ public final class Finance {
 
     public final void payout() {
         mys.broadcastPayDay();
-        for (Wallet wallet : WalletHandler.getWallets().values()) {
+        for (String owner : WalletAPIListener.getWalletOwners()) {
             // check wallet lock status
-            if (wallet.isLocked() && !Router.getCfg().payIfLocked())
-                continue;
+            try {
+                if (WalletAPIListener.isLocked(owner) && !Router.getCfg().payIfLocked())
+                    continue;
+            }
+            catch (AccountNotFoundException anfex) {
+                // Impossible
+            }
             double pay = Router.getCfg().getDefaultPayAmount();
             // check if group amount is needed
             if (Router.getCfg().isGroupSpecificEnabled()) {
-                String group = mys.getGroupNameForUser(wallet.getOwner());
+                String group = mys.getGroupNameForUser(owner);
                 // if no group, ignore wallet and continue
                 if (group == null)
                     continue;
@@ -73,25 +75,27 @@ public final class Finance {
                 // Check if checks can be accumulated
                 if (Router.getCfg().isAccumulateChecksEnabled()) {
                     // if an owner has a pending check, add to it
-                    if (_pending.containsKey(wallet.getOwner())) {
-                        _pending.setDouble(wallet.getOwner(), _pending.getDouble(wallet.getOwner()) + pay);
+                    if (_pending.containsKey(owner)) {
+                        _pending.setDouble(owner, _pending.getDouble(owner) + pay);
                     }
                     else { // just add them to the list
-                        _pending.setDouble(wallet.getOwner(), pay);
+                        _pending.setDouble(owner, pay);
                     }
                 }
                 else { // accumulating is disabled, so the current pay is set and the old check is burned
-                    _pending.setDouble(wallet.getOwner(), pay);
+                    _pending.setDouble(owner, pay);
                 }
             }
             else {
                 try {
-                    wallet.deposit(pay);
-                    dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer().getUser(wallet.getOwner()), PLUGIN_DEPOSIT, pay));
-                    mys.messageUser(wallet.getOwner(), "salary.received", pay, dCoBase.getProperties().getString("money.name"));
+                    WalletAPIListener.walletDeposit(mys, owner, pay, false);
+                    mys.messageUser(owner, "salary.received", pay, dCoBase.getProperties().getString("money.name"));
                 }
                 catch (AccountingException aex) {
-                    mys.getPluginLogger().severe("Accounting Exception occurred while trying to pay User: " + wallet.getOwner() + ". Reason: " + aex.getMessage());
+                    mys.getPluginLogger().severe("Accounting Exception occurred while trying to pay User: " + owner + ". Reason: " + aex.getMessage());
+                }
+                catch (AccountNotFoundException iamyourfather) {
+                    // THAT'S IMPOSSIBLE
                 }
             }
         }
@@ -103,11 +107,13 @@ public final class Finance {
                     return;
             }
             try {
-                WalletHandler.getWalletByName("SERVER").deposit(serv_pay);
-                dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer(), PLUGIN_DEPOSIT, serv_pay));
+                WalletAPIListener.walletDeposit(mys, "SERVER", serv_pay, false);
             }
             catch (AccountingException aex) {
                 mys.getPluginLogger().severe("Accounting Exception occurred while trying to pay SERVER. Reason: " + aex.getMessage());
+            }
+            catch (AccountNotFoundException anfex) {
+                // still impossible
             }
         }
     }
@@ -135,14 +141,16 @@ public final class Finance {
         if (_pending.containsKey(user_name)) {
             try {
                 double pay = _pending.getDouble(user_name);
-                WalletHandler.getWalletByName(user_name).deposit(pay);
-                dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer().getUser(user_name), PLUGIN_DEPOSIT, pay));
+                WalletAPIListener.walletDeposit(mys, user_name, pay, false);
                 _pending.removeKey(user_name);
                 return pay;
             }
             catch (AccountingException aex) {
                 dConomyUser user = dCoBase.getServer().getUser(user_name);
                 user.error(aex.getLocalizedMessage(user.getUserLocale()));
+                return -1;
+            }
+            catch (AccountNotFoundException anfex) {
                 return -1;
             }
         }

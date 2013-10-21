@@ -154,7 +154,7 @@
                             <value>${project.issueManagement.url}</value>
                         </replacement>
                         <replace>
-                            <token>{check.url}</token>
+                            <token>{version.check.url}</token>
                             <value>${version.check.url}</value>
                         </replace>
                         <replace>
