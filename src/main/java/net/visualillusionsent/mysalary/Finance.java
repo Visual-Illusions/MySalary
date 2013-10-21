@@ -17,9 +17,11 @@
  */
 package net.visualillusionsent.mysalary;
 
+import net.visualillusionsent.dconomy.accounting.AccountingException;
 import net.visualillusionsent.dconomy.accounting.wallet.Wallet;
 import net.visualillusionsent.dconomy.accounting.wallet.WalletHandler;
 import net.visualillusionsent.dconomy.api.account.wallet.WalletTransaction;
+import net.visualillusionsent.dconomy.api.dConomyUser;
 import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.utils.DateUtils;
 import net.visualillusionsent.utils.PropertiesFile;
@@ -83,9 +85,14 @@ public final class Finance {
                 }
             }
             else {
-                wallet.deposit(pay);
-                dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer().getUser(wallet.getOwner()), PLUGIN_DEPOSIT, pay));
-                mys.messageUser(wallet.getOwner(), "salary.received", pay, dCoBase.getProperties().getString("money.name"));
+                try {
+                    wallet.deposit(pay);
+                    dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer().getUser(wallet.getOwner()), PLUGIN_DEPOSIT, pay));
+                    mys.messageUser(wallet.getOwner(), "salary.received", pay, dCoBase.getProperties().getString("money.name"));
+                }
+                catch (AccountingException aex) {
+                    mys.getPluginLogger().severe("Accounting Exception occurred while trying to pay User: " + wallet.getOwner() + ". Reason: " + aex.getMessage());
+                }
             }
         }
         if (Router.getCfg().payServer()) {
@@ -95,8 +102,13 @@ public final class Finance {
                 if (serv_pay <= 0)
                     return;
             }
-            WalletHandler.getWalletByName("SERVER").deposit(serv_pay);
-            dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer(), PLUGIN_DEPOSIT, serv_pay));
+            try {
+                WalletHandler.getWalletByName("SERVER").deposit(serv_pay);
+                dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer(), PLUGIN_DEPOSIT, serv_pay));
+            }
+            catch (AccountingException aex) {
+                mys.getPluginLogger().severe("Accounting Exception occurred while trying to pay SERVER. Reason: " + aex.getMessage());
+            }
         }
     }
 
@@ -121,13 +133,20 @@ public final class Finance {
 
     public final double checkPendingAndPay(String user_name) {
         if (_pending.containsKey(user_name)) {
-            double pay = _pending.getDouble(user_name);
-            _pending.removeKey(user_name);
-            WalletHandler.getWalletByName(user_name).deposit(pay);
-            dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer().getUser(user_name), PLUGIN_DEPOSIT, pay));
-            return pay;
+            try {
+                double pay = _pending.getDouble(user_name);
+                WalletHandler.getWalletByName(user_name).deposit(pay);
+                dCoBase.getServer().newTransaction(new WalletTransaction(mys, dCoBase.getServer().getUser(user_name), PLUGIN_DEPOSIT, pay));
+                _pending.removeKey(user_name);
+                return pay;
+            }
+            catch (AccountingException aex) {
+                dConomyUser user = dCoBase.getServer().getUser(user_name);
+                user.error(aex.getLocalizedMessage(user.getUserLocale()));
+                return -1;
+            }
         }
-        return -1;
+        return 0;
     }
 
     public final String getTimeUntil() {

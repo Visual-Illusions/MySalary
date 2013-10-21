@@ -91,7 +91,7 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
             if (result > 0) {
                 msgrec.message(Router.getTranslator().translate("salary.received", asUser(msgrec).getUserLocale(), result));
             }
-            else {
+            else if (result == 0) {
                 msgrec.notice(Router.getTranslator().translate("no.check", asUser(msgrec).getUserLocale()));
             }
         }

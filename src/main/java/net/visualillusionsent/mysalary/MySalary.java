@@ -19,6 +19,8 @@ package net.visualillusionsent.mysalary;
 
 import net.visualillusionsent.dconomy.api.dConomyAddOn;
 
+import java.util.logging.Logger;
+
 /**
  * MySalary interface
  *
@@ -31,4 +33,6 @@ public interface MySalary extends dConomyAddOn {
     void messageUser(String user_name, String message_key, Object... args);
 
     String getGroupNameForUser(String user_name);
+
+    Logger getPluginLogger();
 }
