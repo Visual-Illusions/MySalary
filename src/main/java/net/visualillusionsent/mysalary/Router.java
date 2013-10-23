@@ -17,15 +17,23 @@
  */
 package net.visualillusionsent.mysalary;
 
+import net.visualillusionsent.dconomy.dCoBase;
+
 /** @author Jason (darkdiplomat) */
 public final class Router {
     private static Router ROUTER;
     private final MessageTranslator translator;
     private final MySalaryConfiguration my_cfg;
     private final Finance finance;
+    private final float dCoVersion = 3.0F;
+    private final long dCoRevision = 0;
 
     public Router(MySalary mysalary) {
         ROUTER = this;
+        if (dCoBase.isNewerThan(dCoVersion, dCoRevision)) {
+            mysalary.getPluginLogger().warning("dConomy appears to be a newer version. Incompatibility could result...");
+        }
+
         this.my_cfg = new MySalaryConfiguration(mysalary);
         this.translator = new MessageTranslator();
         this.finance = new Finance(mysalary);

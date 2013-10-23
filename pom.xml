@@ -11,7 +11,7 @@
         <build.number>0-dev</build.number>
         <canary.main.class>${project.groupId}.${project.artifactId}.canary.CanarySalary</canary.main.class>
         <bukkit.main.class>${project.groupId}.${project.artifactId}.bukkit.BukkitSalary</bukkit.main.class>
-        <vimcplugin.version>1.0.0-SNAPSHOT</vimcplugin.version>
+        <vimcplugin.version>1.0.0</vimcplugin.version>
         <dCo.version>3.0.0</dCo.version>
         <build.number>0-dev</build.number>
         <version.check.url>http://visualillusionsent.net/minecraft/plugins/</version.check.url>
