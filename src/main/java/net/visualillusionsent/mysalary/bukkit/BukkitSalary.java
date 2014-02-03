@@ -24,6 +24,7 @@ import net.visualillusionsent.mysalary.MySalary;
 import net.visualillusionsent.mysalary.Router;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +38,11 @@ public final class BukkitSalary extends VisualIllusionsBukkitPlugin implements M
         super.onEnable();
         try {
             new Router(this);
-            permission = getServer().getServicesManager().getRegistration(Permission.class).getProvider();
+            Plugin vaultTest = getServer().getPluginManager().getPlugin("Vault");
+            if (vaultTest != null && vaultTest.isEnabled()) {
+                //If Vault if present, set the provider
+                permission = getServer().getServicesManager().getRegistration(Permission.class).getProvider();
+            }
             new BukkitSalaryCommandExecutor(this);
         }
         catch (Exception ex) {
@@ -78,13 +83,13 @@ public final class BukkitSalary extends VisualIllusionsBukkitPlugin implements M
 
     @Override
     public String getGroupNameForUser(String user_name) {
-        try {
-            return permission.getPrimaryGroup((String) null, user_name);
+        if (permission != null) {
+            if (permission.hasGroupSupport()) {
+                return permission.getPrimaryGroup((String) null, user_name);
+            }
         }
-        catch (UnsupportedOperationException uoex) {
-            // If a permission system without groups is used, default to either ops or default grouping
-            return Bukkit.getServer().getOfflinePlayer(user_name).isOp() ? "ops" : "default";
-        }
+        // If a permission system without groups is used, default to either ops or default grouping
+        return Bukkit.getServer().getOfflinePlayer(user_name).isOp() ? "ops" : "default";
     }
 
     @Override
