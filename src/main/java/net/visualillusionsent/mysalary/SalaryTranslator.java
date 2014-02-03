@@ -17,22 +17,17 @@
  */
 package net.visualillusionsent.mysalary;
 
-import net.visualillusionsent.dconomy.api.dConomyAddOn;
+import net.visualillusionsent.dconomy.dCoBase;
+import net.visualillusionsent.minecraft.plugin.MessageTranslator;
+import net.visualillusionsent.minecraft.plugin.VisualIllusionsPlugin;
 
-import java.util.logging.Logger;
+public final class SalaryTranslator extends MessageTranslator {
 
-/**
- * MySalary interface
- *
- * @author Jason (darkdiplomat)
- */
-public interface MySalary extends dConomyAddOn {
+    SalaryTranslator(MySalary mySalary, boolean updateLang) {
+        super((VisualIllusionsPlugin) mySalary, dCoBase.getServerLocale(), updateLang);
+    }
 
-    void broadcastPayDay();
-
-    void messageUser(String user_name, String message_key, Object... args);
-
-    String getGroupNameForUser(String user_name);
-
-    Logger getPluginLogger();
+    public final String translate(String key, String locale, Object... args) {
+        return net.visualillusionsent.minecraft.plugin.ChatFormat.formatString(localeTranslate(key, locale, args), "~").replace("$m", dCoBase.getMoneyName());
+    }
 }

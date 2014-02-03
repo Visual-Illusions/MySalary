@@ -1,18 +1,18 @@
 /*
  * This file is part of MySalary.
  *
- * Copyright © 2011-2013 Visual Illusions Entertainment
+ * Copyright © 2011-2014 Visual Illusions Entertainment
  *
  * MySalary is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * MySalary is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with MySalary.
+ * You should have received a copy of the GNU General Public License along with this program.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
 /*
@@ -35,14 +35,16 @@
 package net.visualillusionsent.mysalary.bukkit;
 
 import net.visualillusionsent.dconomy.dCoBase;
+import net.visualillusionsent.minecraft.plugin.ModMessageReceiver;
 import net.visualillusionsent.minecraft.plugin.bukkit.VisualIllusionsBukkitPluginInformationCommand;
 import net.visualillusionsent.mysalary.Router;
-import net.visualillusionsent.utils.VersionChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /**
  * Command Executor for Bukkit
@@ -60,47 +62,7 @@ public final class BukkitSalaryCommandExecutor extends VisualIllusionsBukkitPlug
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (label.matches("my(s|salary)")) {
             if (args.length == 0) {
-                for (String msg : about) {
-                    if (msg.equals("$VERSION_CHECK$")) {
-                        VersionChecker vc = plugin.getVersionChecker();
-                        Boolean isLatest = vc.isLatest();
-                        if (isLatest == null) {
-                            sender.sendMessage(center(ChatColor.DARK_GRAY.toString().concat("VersionCheckerError: ").concat(vc.getErrorMessage())));
-                        }
-                        else if (!isLatest) {
-                            sender.sendMessage(center(ChatColor.DARK_GRAY.toString().concat(vc.getUpdateAvailibleMessage())));
-                        }
-                        else {
-                            sender.sendMessage(center(ChatColor.GREEN.toString().concat("Latest Version Installed")));
-                        }
-
-                        //Inject MySalary messages
-                        sender.sendMessage(ChatColor.GREEN + "Next PayCheck in: " + ChatColor.GOLD + Router.getFinance().getTimeUntil());
-                        if (Router.getCfg().isGroupSpecificEnabled()) {
-                            if (sender instanceof Player) {
-                                double salary = Router.getCfg().getGroupPay(getPlugin().getGroupNameForUser(sender.getName()));
-                                if (salary > 0) {
-                                    sender.sendMessage(Router.getTranslator().translate("user.salary", dCoBase.getServerLocale(), salary));
-                                }
-                                else {
-                                    sender.sendMessage(ChatColor.RED.toString().concat(Router.getTranslator().translate("no.salary", dCoBase.getServerLocale())));
-                                }
-                            }
-                            else if (Router.getCfg().payServer()) {
-                                sender.sendMessage(Router.getTranslator().translate("user.salary", dCoBase.getServerLocale(), Router.getCfg().getGroupPay("SERVER")));
-                            }
-                        }
-                        else if (sender instanceof Player || Router.getCfg().payServer()) {
-                            sender.sendMessage(Router.getTranslator().translate("user.salary", dCoBase.getServerLocale(), Router.getCfg().getDefaultPayAmount()));
-                        }
-                        else {
-                            sender.sendMessage(ChatColor.RED.toString().concat(Router.getTranslator().translate("no.salary", dCoBase.getServerLocale())));
-                        }
-                    }
-                    else {
-                        sender.sendMessage(msg);
-                    }
-                }
+                super.sendInformation(sender);
                 return true;
             }
             else if (args[0].equals("claim")) {
@@ -138,7 +100,38 @@ public final class BukkitSalaryCommandExecutor extends VisualIllusionsBukkitPlug
         return false;
     }
 
+    @Override
+    protected final void messageInject(ModMessageReceiver mmr) {
+        //Inject MySalary messages
+        mmr.message(ChatColor.GREEN + "Next PayCheck in: " + ChatColor.GOLD + Router.getFinance().getTimeUntil());
+        if (Router.getCfg().isGroupSpecificEnabled()) {
+            if (mmr.unwrap() instanceof Player) {
+                double salary = Router.getCfg().getGroupPay(getPlugin().getGroupNameForUser(mmr.getName()));
+                if (salary > 0) {
+                    mmr.message(Router.getTranslator().translate("user.salary", dCoBase.getServerLocale(), salary));
+                }
+                else {
+                    mmr.message(ChatColor.RED.toString().concat(Router.getTranslator().translate("no.salary", dCoBase.getServerLocale())));
+                }
+            }
+            else if (Router.getCfg().payServer()) {
+                mmr.message(Router.getTranslator().translate("user.salary", dCoBase.getServerLocale(), Router.getCfg().getGroupPay("SERVER")));
+            }
+        }
+        else if (mmr.unwrap() instanceof Player || Router.getCfg().payServer()) {
+            mmr.message(Router.getTranslator().translate("user.salary", dCoBase.getServerLocale(), Router.getCfg().getDefaultPayAmount()));
+        }
+        else {
+            mmr.message(ChatColor.RED.toString().concat(Router.getTranslator().translate("no.salary", dCoBase.getServerLocale())));
+        }
+    }
+
     protected final BukkitSalary getPlugin() {
         return (BukkitSalary) plugin;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        return null; //TODO
     }
 }

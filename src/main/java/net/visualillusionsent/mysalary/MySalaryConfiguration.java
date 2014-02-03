@@ -1,18 +1,18 @@
 /*
  * This file is part of MySalary.
  *
- * Copyright © 2011-2013 Visual Illusions Entertainment
+ * Copyright © 2011-2014 Visual Illusions Entertainment
  *
  * MySalary is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * MySalary is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with MySalary.
+ * You should have received a copy of the GNU General Public License along with this program.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
 package net.visualillusionsent.mysalary;
@@ -63,6 +63,7 @@ public final class MySalaryConfiguration {
         myscfg.getBoolean("accumulate.checks", false);
         myscfg.getBoolean("pay.locked", false);
         myscfg.getBoolean("pay.server", false);
+        myscfg.getBoolean("update.lang", true);
         myscfg.save(); // Saving will only occur if something was actually changed
     }
 
@@ -99,6 +100,10 @@ public final class MySalaryConfiguration {
             return myscfg.getDouble(group_name);
         }
         return -1;
+    }
+
+    boolean updateLang() {
+        return myscfg.getBoolean("update.lang");
     }
 
     public final void setProperty(String key, String value) throws IllegalArgumentException {

@@ -1,21 +1,14 @@
 ﻿# {name} - Bukkit Plugin configuration file
+# Copyright © {copyright.years} Visual Illusions Entertainment
+# Licensed under the {gpl.type}
 
 name: {name}
 main: {bukkit.main.class}
 version: {plugin.version}
 author: Visual Illusions Entertainment
 website: {wiki}
-depend: [Vault, dConomy]
-
-# Visual Illusions Specific Stuff
-developers: {devs}
-build.number: {build}
-build.time: {build.time}
-program.status: {program.status}
-check.url: {version.check.url}
-issues.url: {issues}
-copyright.years: {copyright.years}
-# # #
+soft-depend: [Vault]
+depend: [dConomy]
 
 commands:
   mysalary:
@@ -52,21 +45,3 @@ permissions:
   mysalary.admin:
     description: Grants access to everything MySalary
     default: op
-
-#
-#  This file is part of {name}.
-#
-#  Copyright © {copyright.years} Visual Illusions Entertainment.
-#
-#  {name} is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  {name} is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#  See the GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License along with {name}.
-#  If not, see http://www.gnu.org/licenses/gpl.html
-#

@@ -1,18 +1,18 @@
 /*
  * This file is part of MySalary.
  *
- * Copyright © 2011-2013 Visual Illusions Entertainment
+ * Copyright © 2011-2014 Visual Illusions Entertainment
  *
  * MySalary is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * MySalary is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with MySalary.
+ * You should have received a copy of the GNU General Public License along with this program.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
 package net.visualillusionsent.mysalary.canary;
@@ -24,9 +24,6 @@ import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
 import net.visualillusionsent.mysalary.MySalary;
 import net.visualillusionsent.mysalary.Router;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * MySalary main Canary Plugin class
@@ -48,10 +45,10 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
         catch (Exception ex) {
             String reason = ex.getMessage() != null ? ex.getMessage() : ex.getClass().getSimpleName();
             if (debug) { // Only stack trace if debugging
-                getLogman().log(Level.SEVERE, "MySalary failed to start. Reason: ".concat(reason), ex);
+                getLogman().error("MySalary failed to start. Reason: ".concat(reason), ex);
             }
             else {
-                getLogman().severe("MySalary failed to start. Reason: ".concat(reason));
+                getLogman().error("MySalary failed to start. Reason: ".concat(reason));
             }
         }
         return false;
@@ -70,7 +67,7 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
         else {
             Canary.getServer().broadcastMessage("[§AMySalary§F]§2 PAYDAY!§6 CHECKS ARE BEING DEPOSITED!");
         }
-        getLogman().logInfo("Players paid!");
+        getLogman().info("Players paid!");
     }
 
     @Override
@@ -92,7 +89,7 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
 
     @Override
     public void error(String message) {
-        getLogman().warning(message);
+        getLogman().warn(message);
     }
 
     @Override
@@ -108,10 +105,5 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     @Override
     public String getUserLocale() {
         return dCoBase.getServerLocale();
-    }
-
-    @Override
-    public Logger getPluginLogger() {
-        return getLogman();
     }
 }
