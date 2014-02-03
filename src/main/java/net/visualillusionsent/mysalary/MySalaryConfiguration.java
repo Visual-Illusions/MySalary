@@ -115,7 +115,7 @@ public final class MySalaryConfiguration {
                 throw new IllegalArgumentException("Value is not of a type compatible with the key. (Expected: long [number])");
             }
         }
-        else if (key.matches("(require.claim|group.specific.pay|accumulate.checks|pay.locked|pay.server)")) {
+        else if (SalaryTabComplete.propBool.reset(key).matches()) {
             myscfg.setBoolean(key, BooleanUtils.parseBoolean(value));
         }
         else {
@@ -127,5 +127,9 @@ public final class MySalaryConfiguration {
             }
         }
         myscfg.save();
+    }
+
+    public final String[] getPropKeys() {
+        return myscfg.getPropertiesMap().keySet().toArray(new String[myscfg.getPropertiesMap().size()]);
     }
 }

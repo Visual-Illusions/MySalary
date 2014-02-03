@@ -34,10 +34,13 @@
  */
 package net.visualillusionsent.mysalary.bukkit;
 
+import net.visualillusionsent.dconomy.api.dConomyUser;
+import net.visualillusionsent.dconomy.bukkit.api.Bukkit_User;
 import net.visualillusionsent.dconomy.dCoBase;
 import net.visualillusionsent.minecraft.plugin.ModMessageReceiver;
 import net.visualillusionsent.minecraft.plugin.bukkit.VisualIllusionsBukkitPluginInformationCommand;
 import net.visualillusionsent.mysalary.Router;
+import net.visualillusionsent.mysalary.SalaryTabComplete;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -126,12 +129,13 @@ public final class BukkitSalaryCommandExecutor extends VisualIllusionsBukkitPlug
         }
     }
 
-    protected final BukkitSalary getPlugin() {
-        return (BukkitSalary) plugin;
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        dConomyUser user = sender instanceof Player ? new Bukkit_User((Player) sender) : dCoBase.getServer();
+        return SalaryTabComplete.match(user, args);
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        return null; //TODO
+    protected final BukkitSalary getPlugin() {
+        return (BukkitSalary) plugin;
     }
 }

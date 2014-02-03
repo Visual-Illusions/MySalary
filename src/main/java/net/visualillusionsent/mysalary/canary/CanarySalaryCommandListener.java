@@ -23,6 +23,7 @@ import net.canarymod.chat.Colors;
 import net.canarymod.chat.MessageReceiver;
 import net.canarymod.commandsys.Command;
 import net.canarymod.commandsys.CommandDependencyException;
+import net.canarymod.commandsys.TabComplete;
 import net.visualillusionsent.dconomy.api.dConomyUser;
 import net.visualillusionsent.dconomy.canary.api.Canary_User;
 import net.visualillusionsent.dconomy.dCoBase;
@@ -30,6 +31,9 @@ import net.visualillusionsent.minecraft.plugin.ModMessageReceiver;
 import net.visualillusionsent.minecraft.plugin.canary.CanaryMessageReceiver;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPluginInformationCommand;
 import net.visualillusionsent.mysalary.Router;
+import net.visualillusionsent.mysalary.SalaryTabComplete;
+
+import java.util.List;
 
 /**
  * Canary MySalary Command Listener
@@ -43,10 +47,12 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
         Canary.commands().registerCommands(this, plugin, false);
     }
 
-    @Command(aliases = { "mysalary", "mys" },
+    @Command(
+            aliases = { "mysalary", "mys" },
             description = "MySalary information/main Command",
             permissions = { "mysalary.getpaid" },
-            toolTip = "/mysalary [subcommand]")
+            toolTip = "/mysalary [subcommand]"
+    )
     public final void information(MessageReceiver msgrec, String[] args) {
         super.sendInformation(msgrec);
     }
@@ -80,11 +86,13 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
         }
     }
 
-    @Command(aliases = { "claim" },
+    @Command(
+            aliases = { "claim" },
             description = "Used to claim pending checks",
             permissions = { "mysalary.getpaid" },
             parent = "mysalary",
-            toolTip = "/mysalary claim")
+            toolTip = "/mysalary claim"
+    )
     public final void claimcheck(MessageReceiver msgrec, String[] args) {
         if (Router.getCfg().isRequireClaimEnabled()) {
             double result = Router.getFinance().checkPendingAndPay(msgrec.getName());
@@ -100,20 +108,24 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
         }
     }
 
-    @Command(aliases = { "broadcast" },
+    @Command(
+            aliases = { "broadcast" },
             description = "Broadcasts time until next paycheck",
             permissions = { "mysalary.admin" },
             parent = "mysalary",
-            toolTip = "/mysalary broadcast")
+            toolTip = "/mysalary broadcast"
+    )
     public final void broadcast(MessageReceiver msgrec, String[] args) {
         Canary.getServer().broadcastMessage("[§AMySalary§F]§A Next PayCheck in: " + Colors.ORANGE + Router.getFinance().getTimeUntil());
     }
 
-    @Command(aliases = { "forcepay" },
+    @Command(
+            aliases = { "forcepay" },
             description = "Forces a pay out of checks",
             permissions = { "mysalary.admin" },
             parent = "mysalary",
-            toolTip = "/mysalary forcepay [reset]")
+            toolTip = "/mysalary forcepay [reset]"
+    )
     public final void forcepay(MessageReceiver msgrec, String[] args) {
         if (args.length == 2 && args[1].toLowerCase().equals("reset")) {
             Router.getFinance().reset(false);
@@ -121,12 +133,14 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
         Router.getFinance().payout();
     }
 
-    @Command(aliases = { "setprop" },
+    @Command(
+            aliases = { "setprop" },
             description = "Sets/changes a property value",
             permissions = { "mysalary.admin" },
             parent = "mysalary",
             toolTip = "/mysalary setprop <key> <value>",
-            min = 2)
+            min = 2
+    )
     public final void setProp(MessageReceiver msgrec, String[] args) {
         try {
             Router.getCfg().setProperty(args[1], args[2]);
@@ -135,6 +149,11 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
         catch (IllegalArgumentException iaex) {
             msgrec.notice(iaex.getMessage());
         }
+    }
+
+    @TabComplete
+    public final List<String> salaryComp(MessageReceiver msgrec, String[] args) {
+        return SalaryTabComplete.match(asUser(msgrec), args);
     }
 
     protected final CanarySalary getPlugin() {
