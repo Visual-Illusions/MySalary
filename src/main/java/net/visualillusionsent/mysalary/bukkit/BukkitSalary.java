@@ -24,7 +24,6 @@ import net.visualillusionsent.mysalary.MySalary;
 import net.visualillusionsent.mysalary.Router;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,8 +37,7 @@ public final class BukkitSalary extends VisualIllusionsBukkitPlugin implements M
         super.onEnable();
         try {
             new Router(this);
-            Plugin vaultTest = getServer().getPluginManager().getPlugin("Vault");
-            if (vaultTest != null && vaultTest.isEnabled()) {
+            if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
                 //If Vault if present, set the provider
                 permission = getServer().getServicesManager().getRegistration(Permission.class).getProvider();
             }

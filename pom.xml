@@ -95,28 +95,11 @@ Copyright © 2011-2014 Visual Illusions Entertainment
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.2.27</version>
+            <version>1.2.30</version>
         </dependency>
     </dependencies>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <linksource>true</linksource>
-                    <doctitle>${project.name} ${project.version}</doctitle>
-                    <header>Generated: ${maven.build.timestamp}</header>
-                    <footer>
-                        <![CDATA[Licensed under the <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License v3</a>]]></footer>
-                    <links>
-                        <link>http://docs.visualillusionsent.net/dConomy/${dCo.version}/</link>
-                        <link>http://docs.visualillusionsent.net/CanaryLib/1.0-RC-4-SNAPSHOT/</link>
-                        <link>http://jd.bukkit.org/rb/apidocs/</link>
-                    </links>
-                </configuration>
-            </plugin>
             <!-- Timestamp for year -->
             <plugin>
                 <groupId>com.keyboardsamurais.maven</groupId>
@@ -278,16 +261,6 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                                             <pattern>net.visualillusionsent.minecraft.plugin</pattern>
                                             <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
                                         </relocation>
-                                        <!-- Canary -->
-                                        <relocation>
-                                            <pattern>net.visualillusionsent.minecraft.plugin.canary</pattern>
-                                            <shadedPattern>${project.groupId}.${project.artifactId}.canary</shadedPattern>
-                                        </relocation>
-                                        <!-- Bukkit -->
-                                        <relocation>
-                                            <pattern>net.visualillusionsent.minecraft.plugin.bukkit</pattern>
-                                            <shadedPattern>${project.groupId}.${project.artifactId}.bukkit</shadedPattern>
-                                        </relocation>
                                     </relocations>
                                     <shadedArtifactAttached>true</shadedArtifactAttached>
                                     <shadedClassifierName>${build.number}-universal</shadedClassifierName>
@@ -375,10 +348,6 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                                             <pattern>net.visualillusionsent.minecraft.plugin</pattern>
                                             <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
                                         </relocation>
-                                        <relocation>
-                                            <pattern>net.visualillusionsent.minecraft.plugin.bukkit</pattern>
-                                            <shadedPattern>${project.groupId}.${project.artifactId}.bukkit</shadedPattern>
-                                        </relocation>
                                     </relocations>
                                     <shadedArtifactAttached>true</shadedArtifactAttached>
                                     <shadedClassifierName>${build.number}-bukkit</shadedClassifierName>
@@ -394,7 +363,7 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                         <configuration>
                             <!-- Don't include Canary specific things in a Bukkit Jar -->
                             <excludes>
-                                <exclude>net/visualillusionsent/realms/canary/</exclude>
+                                <exclude>net/visualillusionsent/mysalary/canary/</exclude>
                                 <exclude>Canary.inf</exclude>
                             </excludes>
                             <archive>
@@ -471,10 +440,6 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                                             <pattern>net.visualillusionsent.minecraft.plugin</pattern>
                                             <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
                                         </relocation>
-                                        <relocation>
-                                            <pattern>net.visualillusionsent.minecraft.plugin.canary</pattern>
-                                            <shadedPattern>${project.groupId}.${project.artifactId}.canary</shadedPattern>
-                                        </relocation>
                                     </relocations>
                                     <shadedArtifactAttached>true</shadedArtifactAttached>
                                     <shadedClassifierName>${build.number}-canary</shadedClassifierName>
@@ -490,7 +455,7 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                         <configuration>
                             <!-- Don't include Bukkit specific things in a Canary Jar -->
                             <excludes>
-                                <exclude>net/visualillusionsent/realms/bukkit/</exclude>
+                                <exclude>net/visualillusionsent/mysalary/bukkit/</exclude>
                                 <exclude>plugin.yml</exclude>
                             </excludes>
                             <archive>
