@@ -39,21 +39,19 @@ public final class Router {
         this.finance = new Finance(mysalary);
     }
 
-    public final static SalaryTranslator getTranslator() {
+    public static SalaryTranslator getTranslator() {
         return ROUTER.translator;
     }
 
-    public final static MySalaryConfiguration getCfg() {
+    public static MySalaryConfiguration getCfg() {
         return ROUTER.my_cfg;
     }
 
-    public final static Finance getFinance() {
+    public static Finance getFinance() {
         return ROUTER.finance;
     }
 
-    public final static void closeConnection() {
-        if (ROUTER.finance != null) {
-            ROUTER.finance.close();
-        }
+    public static void closeConnection() {
+        ROUTER.finance.close();
     }
 }

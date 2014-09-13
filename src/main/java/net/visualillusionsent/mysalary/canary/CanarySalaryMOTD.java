@@ -44,7 +44,7 @@ public class CanarySalaryMOTD implements MessageOfTheDayListener {
         double salary = 0;
         if (Router.getCfg().isGroupSpecificEnabled()) {
             if (msgrec instanceof Player) {
-                salary = Router.getCfg().getGroupPay(cSalary.getGroupNameForUser(msgrec.getName()));
+                salary = Router.getCfg().getGroupPay(cSalary.getGroupNameForUser(((Player) msgrec).getUUID()));
             }
             else if (Router.getCfg().payServer()) {
                 salary = Router.getCfg().getGroupPay("SERVER");

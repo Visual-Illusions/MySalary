@@ -25,15 +25,17 @@ import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugi
 import net.visualillusionsent.mysalary.MySalary;
 import net.visualillusionsent.mysalary.Router;
 
+import java.util.UUID;
+
 /**
  * MySalary main Canary Plugin class
  *
  * @author Jason (darkdiplomat)
  */
-public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalary {
+public final class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalary {
 
     @Override
-    public boolean enable() {
+    public final boolean enable() {
         super.enable();
 
         try {
@@ -55,12 +57,12 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     }
 
     @Override
-    public void disable() {
+    public final void disable() {
         Router.closeConnection();
     }
 
     @Override
-    public void broadcastPayDay() {
+    public final void broadcastPayDay() {
         if (Router.getCfg().isRequireClaimEnabled()) {
             Canary.getServer().broadcastMessage("[§AMySalary§F]§2 PAYDAY!§6 CHECKS ARE READY FOR PICKUP!");
         }
@@ -71,16 +73,16 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     }
 
     @Override
-    public void messageUser(String user_name, String message_key, Object... args) {
-        Player player = Canary.getServer().getPlayer(user_name);
+    public final void messageUser(UUID userUUID, String message_key, Object... args) {
+        Player player = Canary.getServer().getPlayerFromUUID(userUUID);
         if (player != null) {
             player.message(Router.getTranslator().translate(message_key, getUserLocale(), args));
         }
     }
 
     @Override
-    public String getGroupNameForUser(String user_name) {
-        OfflinePlayer offplayer = Canary.getServer().getOfflinePlayer(user_name);
+    public final String getGroupNameForUser(UUID userUUID) {
+        OfflinePlayer offplayer = Canary.getServer().getOfflinePlayer(userUUID.toString());
         if (offplayer != null) {
             return offplayer.getGroup().getName();
         }
@@ -88,12 +90,22 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     }
 
     @Override
-    public void error(String message) {
+    public final UUID getUUID() {
+        return UUID.nameUUIDFromBytes("MySalary-dConomy-AddOn".getBytes());
+    }
+
+    @Override
+    public final UUID getOfflineUUID() {
+        return getUUID();
+    }
+
+    @Override
+    public final void error(String message) {
         getLogman().warn(message);
     }
 
     @Override
-    public void message(String message) {
+    public final void message(String message) {
         getLogman().info(message);
     }
 
@@ -103,7 +115,12 @@ public class CanarySalary extends VisualIllusionsCanaryPlugin implements MySalar
     }
 
     @Override
-    public String getUserLocale() {
+    public final String getUserLocale() {
         return dCoBase.getServerLocale();
+    }
+
+    @Override
+    public final boolean isOnline() {
+        return false;
     }
 }

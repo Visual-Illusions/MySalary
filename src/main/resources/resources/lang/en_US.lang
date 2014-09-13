@@ -1,6 +1,6 @@
-;# {name} - English (US) Language File
-;# Copyright © {copyright.years} Visual Illusions Entertainment
-;# Licensed under the {gpl.type}
+;# ${name} - English (US) Language File
+;# Copyright © ${copyright.years} Visual Illusions Entertainment
+;# Licensed under the ${license}
 ;# This file NEEDS to be in UTF-8 format!
 ;# This file is also the default Language file and needs to be included
 ;# DO NOT MODIFY THIS FILE! clone the file to create new translations.

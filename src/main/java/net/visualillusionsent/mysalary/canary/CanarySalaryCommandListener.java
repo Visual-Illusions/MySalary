@@ -48,9 +48,9 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
     }
 
     @Command(
-            aliases = { "mysalary", "mys" },
+            aliases = {"mysalary", "mys"},
             description = "MySalary information/main Command",
-            permissions = { "mysalary.getpaid" },
+            permissions = {"mysalary.getpaid"},
             toolTip = "/mysalary [subcommand]"
     )
     public final void information(MessageReceiver msgrec, String[] args) {
@@ -63,7 +63,7 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
         receiver.message(Colors.LIGHT_GREEN + "Next PayCheck in: " + Colors.ORANGE + Router.getFinance().getTimeUntil());
         if (Router.getCfg().isGroupSpecificEnabled()) {
             if (msgrec instanceof Player) {
-                double salary = Router.getCfg().getGroupPay(getPlugin().getGroupNameForUser(msgrec.getName()));
+                double salary = Router.getCfg().getGroupPay(getPlugin().getGroupNameForUser(((Player) msgrec).getUUID()));
                 if (salary > 0) {
                     msgrec.message(Router.getTranslator().translate("user.salary", asUser(msgrec).getUserLocale(), salary));
                 }
@@ -87,9 +87,9 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
     }
 
     @Command(
-            aliases = { "claim" },
+            aliases = {"claim"},
             description = "Used to claim pending checks",
-            permissions = { "mysalary.getpaid" },
+            permissions = {"mysalary.getpaid"},
             parent = "mysalary",
             toolTip = "/mysalary claim"
     )
@@ -109,9 +109,9 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
     }
 
     @Command(
-            aliases = { "broadcast" },
+            aliases = {"broadcast"},
             description = "Broadcasts time until next paycheck",
-            permissions = { "mysalary.admin" },
+            permissions = {"mysalary.admin"},
             parent = "mysalary",
             toolTip = "/mysalary broadcast"
     )
@@ -120,9 +120,9 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
     }
 
     @Command(
-            aliases = { "forcepay" },
+            aliases = {"forcepay"},
             description = "Forces a pay out of checks",
-            permissions = { "mysalary.admin" },
+            permissions = {"mysalary.admin"},
             parent = "mysalary",
             toolTip = "/mysalary forcepay [reset]"
     )
@@ -134,9 +134,9 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
     }
 
     @Command(
-            aliases = { "setprop" },
+            aliases = {"setprop"},
             description = "Sets/changes a property value",
-            permissions = { "mysalary.admin" },
+            permissions = {"mysalary.admin"},
             parent = "mysalary",
             toolTip = "/mysalary setprop <key> <value>",
             min = 2

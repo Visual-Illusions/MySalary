@@ -27,6 +27,7 @@ import net.visualillusionsent.utils.PropertiesFile;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 /**
  * Finance Department
@@ -48,7 +49,7 @@ public final class Finance {
 
     public final void payout() {
         mys.broadcastPayDay();
-        for (String owner : WalletAPIListener.getWalletOwners()) {
+        for (UUID owner : WalletAPIListener.getWalletOwners()) {
             // check wallet lock status
             try {
                 if (WalletAPIListener.isLocked(owner) && !Router.getCfg().payIfLocked())
@@ -75,20 +76,25 @@ public final class Finance {
                 // Check if checks can be accumulated
                 if (Router.getCfg().isAccumulateChecksEnabled()) {
                     // if an owner has a pending check, add to it
-                    if (_pending.containsKey(owner)) {
-                        _pending.setDouble(owner, _pending.getDouble(owner) + pay);
+                    if (_pending.containsKey(owner.toString())) {
+                        _pending.setDouble(owner.toString(), _pending.getDouble(owner.toString()) + pay);
                     }
                     else { // just add them to the list
-                        _pending.setDouble(owner, pay);
+                        _pending.setDouble(owner.toString(), pay);
                     }
                 }
                 else { // accumulating is disabled, so the current pay is set and the old check is burned
-                    _pending.setDouble(owner, pay);
+                    _pending.setDouble(owner.toString(), pay);
                 }
             }
             else {
                 try {
-                    WalletAPIListener.walletDeposit(mys, owner, pay, false);
+                    dConomyUser user = dCoBase.getServer().getUserFromUUID(owner);
+                    if (user == null) {
+                        mys.getPluginLogger().severe("Was unable to locate User: " + owner + ".");
+                        continue;
+                    }
+                    WalletAPIListener.walletDeposit(mys, user, pay, false);
                     mys.messageUser(owner, "salary.received", pay, dCoBase.getProperties().getString("money.name"));
                 }
                 catch (AccountingException aex) {
@@ -96,6 +102,9 @@ public final class Finance {
                 }
                 catch (AccountNotFoundException iamyourfather) {
                     // THAT'S IMPOSSIBLE
+                }
+                catch (Exception ex) {
+                    mys.getPluginLogger().severe("Exception occurred while trying to pay User: " + owner + ". Reason: " + ex.getCause());
                 }
             }
         }
@@ -107,7 +116,7 @@ public final class Finance {
                     return;
             }
             try {
-                WalletAPIListener.walletDeposit(mys, "SERVER", serv_pay, false);
+                WalletAPIListener.walletDeposit(mys, dCoBase.getServer(), serv_pay, false);
             }
             catch (AccountingException aex) {
                 mys.getPluginLogger().severe("Accounting Exception occurred while trying to pay SERVER. Reason: " + aex.getMessage());

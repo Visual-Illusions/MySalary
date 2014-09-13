@@ -19,6 +19,7 @@ package net.visualillusionsent.mysalary;
 
 import net.visualillusionsent.dconomy.api.dConomyAddOn;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -30,9 +31,9 @@ public interface MySalary extends dConomyAddOn {
 
     void broadcastPayDay();
 
-    void messageUser(String user_name, String message_key, Object... args);
+    void messageUser(UUID userUUID, String message_key, Object... args);
 
-    String getGroupNameForUser(String user_name);
+    String getGroupNameForUser(UUID userUUID);
 
     Logger getPluginLogger();
 }
