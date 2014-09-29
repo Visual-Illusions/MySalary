@@ -18,6 +18,7 @@
 package net.visualillusionsent.mysalary;
 
 import net.visualillusionsent.dconomy.dCoBase;
+import net.visualillusionsent.minecraft.plugin.PluginInitializationException;
 
 /** @author Jason (darkdiplomat) */
 public final class Router {
@@ -25,12 +26,13 @@ public final class Router {
     private final SalaryTranslator translator;
     private final MySalaryConfiguration my_cfg;
     private final Finance finance;
-    private final float dCoVersion = 3.0F;
-    private final long dCoRevision = 0;
 
     public Router(MySalary mysalary) {
         ROUTER = this;
-        if (dCoBase.isNewerThan(dCoVersion, dCoRevision)) {
+        if (!dCoBase.isNewerThan(3.0F, -1)) {
+            throw new PluginInitializationException("MySalary requires dConomy 3.0.0 or newer");
+        }
+        if (dCoBase.isNewerThan(3.0F, 0, false)) {
             mysalary.getPluginLogger().warning("dConomy appears to be a newer version. Incompatibility could result...");
         }
 

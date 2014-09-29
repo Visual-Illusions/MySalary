@@ -16,7 +16,7 @@ Copyright © 2011-2014 Visual Illusions Entertainment
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <canary.main.class>${project.groupId}.${project.artifactId}.canary.CanarySalary</canary.main.class>
         <vimcplugin.version>1.1.0-SNAPSHOT</vimcplugin.version>
-        <dCo.version>3.0.0-SNAPSHOT</dCo.version>
+        <dCo.version>3.0.1</dCo.version>
         <status.url>http://status.visualillusionsent.net/</status.url>
         <devs>darkdiplomat</devs>
         <license>GNU General Public License v3</license>
@@ -80,7 +80,7 @@ Copyright © 2011-2014 Visual Illusions Entertainment
         <repository>
             <id>vi-repo</id>
             <name>Visual Illusions Repository</name>
-            <url>http://repo.visualillusionsent.net/</url>
+            <url>http://repo.visualillusionsent.net/repository/public</url>
         </repository>
     </repositories>
     <dependencies>
