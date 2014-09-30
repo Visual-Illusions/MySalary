@@ -378,10 +378,10 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                         <configuration>
                             <archiveDirectory>target/</archiveDirectory>
                             <excludes>
-                                <exclude>**/dummyload.jar</exclude>
+                                <exclude>dummyload.jar</exclude>
                             </excludes>
                             <includes>
-                                <include>**/*.jar</include>
+                                <include>*.jar</include>
                             </includes>
                             <keystore>${keystore.path}</keystore>
                             <alias>${keystore.alias}</alias>
