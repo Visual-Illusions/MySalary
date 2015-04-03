@@ -1,7 +1,7 @@
 /*
  * This file is part of MySalary.
  *
- * Copyright © 2011-2014 Visual Illusions Entertainment
+ * Copyright © 2011-2015 Visual Illusions Entertainment
  *
  * MySalary is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import net.canarymod.commandsys.TabComplete;
 import net.visualillusionsent.dconomy.api.dConomyUser;
 import net.visualillusionsent.dconomy.canary.api.Canary_User;
 import net.visualillusionsent.dconomy.dCoBase;
+import net.visualillusionsent.minecraft.plugin.ChatFormat;
 import net.visualillusionsent.minecraft.plugin.ModMessageReceiver;
 import net.visualillusionsent.minecraft.plugin.canary.CanaryMessageReceiver;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPluginInformationCommand;
@@ -60,7 +61,7 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
     @Override
     protected final void messageInject(ModMessageReceiver receiver) {
         MessageReceiver msgrec = ((CanaryMessageReceiver) receiver).unwrap();
-        receiver.message(Colors.LIGHT_GREEN + "Next PayCheck in: " + Colors.ORANGE + Router.getFinance().getTimeUntil());
+        receiver.message(ChatFormat.LIGHT_GREEN + "Next PayCheck in: " + ChatFormat.ORANGE + Router.getFinance().getTimeUntil());
         if (Router.getCfg().isGroupSpecificEnabled()) {
             if (msgrec instanceof Player) {
                 double salary = Router.getCfg().getGroupPay(getPlugin().getGroupNameForUser(((Player) msgrec).getUUID()));
@@ -91,6 +92,7 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
             description = "Used to claim pending checks",
             permissions = {"mysalary.getpaid"},
             parent = "mysalary",
+            helpLookup = "mysalary claim",
             toolTip = "/mysalary claim"
     )
     public final void claimcheck(MessageReceiver msgrec, String[] args) {
@@ -113,6 +115,7 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
             description = "Broadcasts time until next paycheck",
             permissions = {"mysalary.admin"},
             parent = "mysalary",
+            helpLookup = "mysalary broadcast",
             toolTip = "/mysalary broadcast"
     )
     public final void broadcast(MessageReceiver msgrec, String[] args) {
@@ -124,6 +127,7 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
             description = "Forces a pay out of checks",
             permissions = {"mysalary.admin"},
             parent = "mysalary",
+            helpLookup = "mysalary forcepay",
             toolTip = "/mysalary forcepay [reset]"
     )
     public final void forcepay(MessageReceiver msgrec, String[] args) {
@@ -138,6 +142,7 @@ public final class CanarySalaryCommandListener extends VisualIllusionsCanaryPlug
             description = "Sets/changes a property value",
             permissions = {"mysalary.admin"},
             parent = "mysalary",
+            helpLookup = "mysalary setprop",
             toolTip = "/mysalary setprop <key> <value>",
             min = 2
     )

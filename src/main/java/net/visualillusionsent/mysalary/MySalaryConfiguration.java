@@ -1,7 +1,7 @@
 /*
  * This file is part of MySalary.
  *
- * Copyright © 2011-2014 Visual Illusions Entertainment
+ * Copyright © 2011-2015 Visual Illusions Entertainment
  *
  * MySalary is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@ import net.visualillusionsent.utils.BooleanUtils;
 import net.visualillusionsent.utils.FileUtils;
 import net.visualillusionsent.utils.JarUtils;
 import net.visualillusionsent.utils.PropertiesFile;
-import net.visualillusionsent.utils.UtilityException;
 
 import java.io.File;
+import java.io.IOException;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 
@@ -50,7 +50,7 @@ public final class MySalaryConfiguration {
             try {
                 FileUtils.cloneFileFromJar(JarUtils.getJarPath(MySalaryConfiguration.class), "resources/default_config.cfg", "config/MySalary/settings.cfg");
             }
-            catch (UtilityException uex) {
+            catch (IOException uex) {
                 throw new PluginInitializationException("Failed to get properties...", uex);
             }
         }

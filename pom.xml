@@ -1,6 +1,6 @@
 <!--
 MySalary Maven POM File
-Copyright © 2011-2014 Visual Illusions Entertainment
+Copyright © 2011-2015 Visual Illusions Entertainment
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -15,14 +15,15 @@ Copyright © 2011-2014 Visual Illusions Entertainment
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <canary.main.class>${project.groupId}.${project.artifactId}.canary.CanarySalary</canary.main.class>
-        <vimcplugin.version>1.1.0-SNAPSHOT</vimcplugin.version>
-        <dCo.version>3.0.1</dCo.version>
+        <mcpluginlib.version>1.2.0</mcpluginlib.version>
+        <dCo.version>3.0.2</dCo.version>
         <status.url>http://status.visualillusionsent.net/</status.url>
         <devs>darkdiplomat</devs>
         <license>GNU General Public License v3</license>
         <plugin.version>${project.version}</plugin.version>
         <copyright.years>${project.inceptionYear}-${current.year}</copyright.years>
         <build.number/>
+        <build.number.display/>
         <!-- Jar Signing -->
         <keystore.path/>
         <keystore.alias/>
@@ -91,12 +92,12 @@ Copyright © 2011-2014 Visual Illusions Entertainment
         </dependency>
         <dependency>
             <groupId>net.visualillusionsent</groupId>
-            <artifactId>vimcplugin</artifactId>
-            <version>${vimcplugin.version}</version>
+            <artifactId>mcpluginlib</artifactId>
+            <version>${mcpluginlib.version}</version>
         </dependency>
     </dependencies>
     <build>
-        <finalName>${project.name}-${project.version}${build.number}</finalName>
+        <finalName>${project.name}-${project.version}${build.number.display}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -177,6 +178,19 @@ Copyright © 2011-2014 Visual Illusions Entertainment
         </plugins>
     </build>
     <profiles>
+        <!-- Add Build number to a Jenkins build -->
+        <profile>
+            <id>jenkins</id>
+            <activation>
+                <property>
+                    <name>BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <build.number>${BUILD_NUMBER}</build.number>
+                <build.number.display>-b${BUILD_NUMBER}</build.number.display>
+            </properties>
+        </profile>
         <profile>
             <id>universal</id>
             <build>
@@ -193,16 +207,17 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                                     <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <finalName>${project.name}-${project.version}${build.number}-universal</finalName>
+                                    <finalName>${project.name}-${project.version}${build.number.display}-universal
+                                    </finalName>
                                     <artifactSet>
                                         <includes>
                                             <!-- Only need to shade the VIMCPlugin stuff -->
-                                            <include>net.visualillusionsent:vimcplugin</include>
+                                            <include>net.visualillusionsent:mcpluginlib</include>
                                         </includes>
                                     </artifactSet>
                                     <filters>
                                         <filter>
-                                            <artifact>net.visualillusionsent:vimcplugin</artifact>
+                                            <artifact>net.visualillusionsent:mcpluginlib</artifact>
                                             <includes>
                                                 <!-- Always include the license stuff -->
                                                 <include>META-INF/license/**</include>
@@ -277,16 +292,17 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                                     <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <finalName>${project.name}-${project.version}${build.number}-canary</finalName>
+                                    <finalName>${project.name}-${project.version}${build.number.display}-canary
+                                    </finalName>
                                     <artifactSet>
                                         <includes>
                                             <!-- Only need to shade the VIMCPlugin stuff -->
-                                            <include>net.visualillusionsent:vimcplugin</include>
+                                            <include>net.visualillusionsent:mcpluginlib</include>
                                         </includes>
                                     </artifactSet>
                                     <filters>
                                         <filter>
-                                            <artifact>net.visualillusionsent:vimcplugin</artifact>
+                                            <artifact>net.visualillusionsent:mcpluginlib</artifact>
                                             <includes>
                                                 <!-- Always include the license stuff -->
                                                 <include>META-INF/license/**</include>
@@ -296,8 +312,8 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                                                 <include>net/visualillusionsent/minecraft/plugin/**</include>
                                             </includes>
                                             <excludes>
-                                                <!-- Bukkit is not used in this artifact -->
-                                                <exclude>net/visualillusionsent/minecraft/plugin/bukkit/**</exclude>
+                                                <!-- Sponge is not used in this artifact -->
+                                                <exclude>net/visualillusionsent/minecraft/plugin/sponge/**</exclude>
                                             </excludes>
                                         </filter>
                                     </filters>
